@@ -30,8 +30,8 @@ std::string TTokenValue::toString() {
 
 TToken* TTokenBinaryOp::evaluate(TToken* pArg1, TToken* pArg2) {
     /** Numerical arguments for unary or binary operators. */
-    TTokenValue* dArg1 = dynamic_cast<TTokenValue*>(pArg1);
-    TTokenValue* dArg2 = dynamic_cast<TTokenValue*>(pArg2);
+    TTokenValue* dArg1 = pArg1->type() == TOKEN_VALUE ? (TTokenValue*)pArg1 : nullptr;
+    TTokenValue* dArg2 = pArg2->type() == TOKEN_VALUE ? (TTokenValue*)pArg2 : nullptr;
     /** Evaluated value for numerical tokens. */
     double dVal;
 
