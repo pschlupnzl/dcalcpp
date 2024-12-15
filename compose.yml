@@ -1,0 +1,32 @@
+
+# Docker commands without compose:
+# To build:
+# $ docker build -t dcalcpp .
+# To run and attach to bash inside container:
+# $ docker run --rm -it -v .:/app dcalcpp bash
+
+services:
+  dcalcpp:
+    image: dcalcpp
+    build:
+      context: .
+      dockerfile: Dockerfile
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+    # command: bash
+    
+  nginx:
+    image: nginx
+    build:
+      context: .
+      dockerfile: Dockerfile-nginx
+    ports:
+      - 8080:8080
+    links:
+      - dcalcpp
+    # ports:
+    #   - "8080:8080"
+    # develop:
+    #   watch:
+    #     - action: rebuild
+    #       path: .
