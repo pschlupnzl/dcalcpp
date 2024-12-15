@@ -3,15 +3,8 @@
 
 #include <string>
 #include "eAction.h"
+#include "eScanType.h"
 #include "TToken.h"
-
-enum eScanType {
-  SCAN_UNDEFINED,
-  /** Input number only. */
-  SCAN_NUMBER,
-  /** Input binary operator. */
-  SCAN_BINARYOP,
-};
 
 class TScan {
 protected:
@@ -68,6 +61,18 @@ public:
             BINARY_OP_ACTION_DIV ? "÷" :
             "?";
     }
+};
+
+class TScanOpen : public TScan {
+public:
+    TScanOpen() : TScan(SCAN_OPEN) { };
+    std::string toString() { return "("; }
+};
+
+class TScanClose : public TScan {
+public:
+    TScanClose() : TScan(SCAN_CLOSE) { };
+    std::string toString() { return ")"; }
 };
 
 #endif /* TSCAN_H */

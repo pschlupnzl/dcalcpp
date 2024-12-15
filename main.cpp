@@ -21,7 +21,7 @@ IEvalEquationOptions options = {
 int main(int argc, char **argv) {
     const char* input = argc > 1 
         ? argv[1] 
-        : "1 + 2 * 3";
+        : "(1+2)*3";
     // calc.pushToken(new TTokenValue(1.00));
     // calc.pushToken(new TTokenBinaryOp(BINARY_OP_ACTION_DIV));
     // calc.pushToken(new TTokenValue(0.00));

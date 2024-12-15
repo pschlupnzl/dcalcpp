@@ -56,7 +56,7 @@ void CCalculate::parseEquation() {
     size_t n = m_scan.size();
     for (size_t iThisPt = 0; iThisPt < n; iThisPt++) {
         TScan* scan = m_scan[iThisPt];
-        std::cout << iThisPt << ": Look for " << uLookFor << " Token is " << scan->toString() << "  |";
+        std::cout << iThisPt << ": " << scan->toString() << " : " << LOOKFOR_TO_STRING(uLookFor) << " | ";
         eScanType scanType = scan->type();
         switch (uLookFor) {
             case LOOKFOR_NUMBER:
@@ -69,7 +69,11 @@ void CCalculate::parseEquation() {
                 ) {
                     m_pvoEquation.push_back(((TScanNumber*)scan)->toToken());
                     uLookFor = LOOKFOR_BINARYOP;
-                    //// std::cout << "Found number " << token->toString() << std::endl;
+                    std::cout << "Found number " << scan->toString() << std::endl;
+                } else if (scanType == SCAN_OPEN) {
+                    std::cout << "Found -(-" << std::endl;
+                    iBrktOff += 1;
+                    uLookFor = LOOKFOR_NUMBER;
                 } else {
                     return errorParsing(iThisPt, PARSE_NUMBER_EXPECTED);
                 }
@@ -87,6 +91,13 @@ void CCalculate::parseEquation() {
                     isOps.push_back(binaryToken);
                     uLookFor = LOOKFOR_NUMBER;
                     std::cout << "Found binary op " << scan->toString() << std::endl;
+                } else if (scanType == SCAN_CLOSE) {
+                    iBrktOff -= 1;
+                    if (iBrktOff < 0) {
+                        return errorParsing(iThisPt, PARSE_MISSING_OPEN);
+                    }
+                    uLookFor = LOOKFOR_BINARYOP;
+                    std::cout << "Found close" << std::endl;
                 } else {
                     return errorParsing(iThisPt, PARSE_BINARYOP_EXPECTED);
                 }

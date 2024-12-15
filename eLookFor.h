@@ -11,4 +11,11 @@ enum eLookFor {
     LOOKFOR_BRACKET,
 };
 
+#define LOOKFOR_TO_STRING(uLookFor) ( \
+    uLookFor == LOOKFOR_NUMBER ? "NUMBER" : \
+    uLookFor == LOOKFOR_BINARYOP ? "BINARYOP" : \
+    uLookFor == LOOKFOR_BRACKET ? "BRACKET" : \
+    "?" \
+)
+
 #endif /* ELOOKFOR_H */

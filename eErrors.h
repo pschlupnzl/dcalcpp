@@ -8,6 +8,8 @@ enum eErrors {
     PARSE_NUMBER_EXPECTED,
     /** Looking for a binary operator but didn't get one. */
     PARSE_BINARYOP_EXPECTED,
+    /** Too many closed brackets without matching opens. */
+    PARSE_MISSING_OPEN,
 
     /** A binary operator does not have two operands to work on. */
     EVAL_BINARY_STACK_UNDERFLOW,
