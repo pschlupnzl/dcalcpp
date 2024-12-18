@@ -24,20 +24,26 @@ public:
 class TScanNumber : public TScan {
 private:
     std::string m_tok;
+    bool m_hasDecimal;
+    int m_fractionParts;
+    /**
+     * Parse the token string into fraction parts, returning a value indicating
+     * whether the fraction was parsed.
+     */
+    bool toFractionParts(int* pwhole, int* pnum, int* pdenom);
 public:
-    TScanNumber() : TScan(SCAN_NUMBER) { };
-    void append(const char ch) {
-        m_tok += ch;
+    TScanNumber() : TScan(SCAN_NUMBER) {
+        m_hasDecimal = false;
+        m_fractionParts = 0;
     };
+
+    /** Append a character, including `.` decimal and `_` fraction. */
+    void append(const char ch);
     /**
      * Instantiates a new TTokenValue representing the current string value.
      */
-    TTokenValue* toToken() {
-        return new TTokenValue(std::stod(m_tok));
-    }
-    std::string toString() {
-        return m_tok;
-    }
+    TToken* toToken();
+    std::string toString();
 };
 
 class TScanBinaryOp : public TScan {

@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <vector>
+#include <string.h>
 #include "CCalculate.h"
 #include "TToken.h"
 
@@ -20,11 +21,12 @@ IEvalEquationOptions options = {
 
 int main(int argc, char **argv) {
     const char* input = argc > 1 
-        ? argv[1] 
-        // : "(1+2)*3";
-        : "1+2*3";
-        // : "11";
-        // : "11+22*33";
+        ? argv[1] :
+        // "(1+2)*3";
+        // "1+2*3";
+        // "11";
+        // "11+22*33";
+        "1_2_4";
 
     for (int k = 1; k > 0; k--) {
         calc.reset();
@@ -56,7 +58,7 @@ int main(int argc, char **argv) {
             // lcd.drawRect(tx, ty, tw, th, DISPLAY_FG2);
             // lcd.setCursor(cx, cy);
             // lcd.print(str);
-            cx += 1;
+            cx += strlen(str);
 
         });
 

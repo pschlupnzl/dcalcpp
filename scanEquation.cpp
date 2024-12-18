@@ -23,6 +23,7 @@ void CCalculate::scan(const char ch) {
         case '8':
         case '9':
         case '.':
+        case '_':
             if (!last || type != SCAN_NUMBER) {
                 last = new TScanNumber();
                 m_scan.push_back(last);

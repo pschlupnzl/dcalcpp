@@ -31,8 +31,8 @@ enum eTokenType {
   // TOKEN_OPEN,
   // /** Close bracket, ")". */
   // TOKEN_CLOSE,
-  // /** Fraction, e.g. "-1_2_3" =-1⅔ */
-  // TOKEN_FRACTION,
+  /** Fraction, e.g. "-1_2_3" =-1⅔ */
+  TOKEN_FRACTION,
   // /** Time, e.g. "113:45:33.55". */
   // TOKEN_TIME,
   // /** Angle in degrees, minutes, and seconds. */

@@ -55,12 +55,14 @@ public:
  */
 class TTokenResultBase : public TToken {
 protected:
+    /** Numerical value of the token. */
+    double m_value;
     // /** Parent token, if derived. */
     // TToken* m_parent;
     // /** Value indicating that this token represents the solved RHS. */
     // bool m_solve;
 public:
-    TTokenResultBase(eTokenType type) : TToken(type) { }
+    TTokenResultBase(eTokenType type) : TToken(type) { m_value = 0; }
 };
 
 /**
@@ -68,16 +70,32 @@ public:
  */
 class TTokenValue : public TTokenResultBase {
 private:
-    /** Numerical value of the token. */
-    double m_value;
 public:
-    TTokenValue() : TTokenResultBase(TOKEN_VALUE) { m_value = 0.0; }
+    TTokenValue() : TTokenResultBase(TOKEN_VALUE) { }
     TTokenValue(double value) : TTokenResultBase(TOKEN_VALUE)
     {
         m_value = value;
     }
     /** Return the numerical value of this token. */
     double value() { return m_value; }
+    std::string toString();
+};
+
+class TTokenFraction : public TTokenResultBase {
+private:
+    int m_whole;
+    int m_num;
+    int m_denom;
+
+public:
+    TTokenFraction() : TTokenResultBase(TOKEN_FRACTION) { };
+    TTokenFraction(int whole, int num, int denom)
+    : TTokenResultBase(TOKEN_FRACTION) {
+        m_whole = whole;
+        m_num = num;
+        m_denom = denom;
+        m_value = m_whole + (double) m_num / ((double) m_denom || 1);
+    }
     std::string toString();
 };
 

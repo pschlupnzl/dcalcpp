@@ -12,6 +12,13 @@ std::string TTokenValue::toString() {
   return std::string(buffer);
 }
 
+std::string TTokenFraction::toString()
+{
+    char buffer[TTOKENVALUE_BUFFER_SIZE];
+    snprintf(buffer, TTOKENVALUE_BUFFER_SIZE, "%i~%i/%i", m_whole, m_num, m_denom);
+    return std::string(buffer);
+}
+
 
 TToken* TTokenBinaryOp::evaluate(TToken* pArg1, TToken* pArg2) {
     /** Numerical arguments for unary or binary operators. */
