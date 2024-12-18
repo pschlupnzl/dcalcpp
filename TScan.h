@@ -55,10 +55,10 @@ public:
         return new TTokenBinaryOp(m_action, iBrktOff);
     }
     std::string toString() {
-        return BINARY_OP_ACTION_ADD ? "+" :
-            BINARY_OP_ACTION_MULT ? "*" :
-            BINARY_OP_ACTION_SUB ? "-" :
-            BINARY_OP_ACTION_DIV ? "÷" :
+        return m_action == BINARY_OP_ACTION_ADD ? "+" :
+            m_action == BINARY_OP_ACTION_MULT ? "*" :
+            m_action == BINARY_OP_ACTION_SUB ? "-" :
+            m_action == BINARY_OP_ACTION_DIV ? "÷" :
             "?";
     }
 };

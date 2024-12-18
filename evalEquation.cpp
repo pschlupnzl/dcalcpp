@@ -51,3 +51,6 @@ void CCalculate::evalEquation(IEvalEquationOptions &options) {
     m_presult = dsVals[0];
 }
 
+// void CCalculate::forEach(void f(const TScan *scan))
+// {
+// }

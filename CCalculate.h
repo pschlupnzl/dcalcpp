@@ -1,6 +1,7 @@
 #ifndef CCALCULATE_H
 #define CCALCULATE_H
 
+#include <functional>
 #include <string>
 #include <vector>
 #include "eErrors.h"
@@ -90,12 +91,6 @@ public:
     void reset_result();
 
     /**
-     * Push a new token onto the RPN token stack, as used during parsing.
-     * @param tok Token to be pushed at the end of the stack.
-     */
-    void pushToken(TToken* tok);
-
-    /**
      * Scan the character and add to the current equation.
      * @param ch The character or keypress to add to the current equation.
     */
@@ -105,6 +100,13 @@ public:
     void parseEquation();
     /** Evaluate the RPN stack to attain the result. */
     void evalEquation(IEvalEquationOptions& options);
+
+    /**
+     * Iterate over the scanned tokens, used e.g. to display the read equation.
+     * @param fn Delegate that is called with each token.
+     */
+    // void forEach(void f(TScan* scan));
+    void forEach(const std::function<void(TScan*)> fn);
 
     /** Returns a string representation of the entire calculation. */
     std::string toString();

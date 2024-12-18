@@ -3,28 +3,13 @@
 #include <stdlib.h>
 #include "TToken.h"
 
-// std::string TTokenNumber::toString()
-// {
-//     return m_tok;
-// }
-
-// void TTokenNumber::append(const char ch) {
-//     m_tok += ch;
-//     // try {
-//     //     m_value = std::stod(m_tok);
-//     // } catch (std::invalid_argument ex) {
-//     //     // Something like parsing just "." without any numbers.
-//     //     // NOT SURE WHAT TO DO HERE - catch in CCalculate, probably
-//     // }
-// }
-
-// std::string TTokenNumber::toString() {
-//     return m_tok;
-// }
+/** Size of buffer for displaying a TTokenValue string. */
+#define TTOKENVALUE_BUFFER_SIZE 32
 
 std::string TTokenValue::toString() {
-    // return "'" + m_tok + "':" + std::to_string(m_value);
-    return std::to_string(m_value);
+  char buffer[TTOKENVALUE_BUFFER_SIZE];
+  snprintf(buffer, TTOKENVALUE_BUFFER_SIZE, "%.2lf", m_value);
+  return std::string(buffer);
 }
 
 
@@ -35,7 +20,6 @@ TToken* TTokenBinaryOp::evaluate(TToken* pArg1, TToken* pArg2) {
     /** Evaluated value for numerical tokens. */
     double dVal;
 
-    // if (dArg1 != nullptr && dArg2 != nullptr) ...
     switch (m_action) {
         case ACTION_ADD:
             dVal = dArg1->value() + dArg2->value();
@@ -61,8 +45,8 @@ TToken* TTokenBinaryOp::evaluate(TToken* pArg1, TToken* pArg2) {
 
 std::string TTokenBinaryOp::toString() {
     std::string str = std::string(
-        m_action == BINARY_OP_ACTION_MULT ? "×" :
-        m_action == BINARY_OP_ACTION_MULTNEG ? "-×" :
+        m_action == BINARY_OP_ACTION_MULT ? "*" :
+        m_action == BINARY_OP_ACTION_MULTNEG ? "#" :
         m_action == BINARY_OP_ACTION_DIV ? "÷" :
         m_action == BINARY_OP_ACTION_ADD ? "+" :
         m_action == BINARY_OP_ACTION_SUB ? "-" :

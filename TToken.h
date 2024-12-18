@@ -46,20 +46,6 @@ public:
     }
 };
 
-// /**
-//  * Number-type token being scanned during input and lexing.
-//  */
-// class TTokenNumber : public TToken {
-// private:
-//     /** String representation as entered by the user. */
-//     std::string m_tok;
-// public:
-//     TTokenNumber() : TToken(TOKEN_NUMBER) { }
-//     /** Append a character to the string. */
-//     void append(const char ch);
-//     std::string toString();
-// };
-
 /**
  * A result-type token, entered or derived. This is limited to:
  *  - eTokenType.VALUE
@@ -69,16 +55,12 @@ public:
  */
 class TTokenResultBase : public TToken {
 protected:
-    /** Numerical value of the token. */
-    double m_value;
     // /** Parent token, if derived. */
     // TToken* m_parent;
     // /** Value indicating that this token represents the solved RHS. */
     // bool m_solve;
 public:
-    TTokenResultBase(eTokenType type) : TToken(type), m_value(0.0) { }
-
-    TTokenResultBase(eTokenType type, double value) : TToken(type), m_value(value) { }
+    TTokenResultBase(eTokenType type) : TToken(type) { }
 };
 
 /**
@@ -86,16 +68,14 @@ public:
  */
 class TTokenValue : public TTokenResultBase {
 private:
-    /** String representation as entered by the user. */
-    // std::string m_tok;
+    /** Numerical value of the token. */
+    double m_value;
 public:
     TTokenValue() : TTokenResultBase(TOKEN_VALUE) { m_value = 0.0; }
     TTokenValue(double value) : TTokenResultBase(TOKEN_VALUE)
     {
         m_value = value;
     }
-    // /** Append a character to the string. */
-    // void append(const char ch);
     /** Return the numerical value of this token. */
     double value() { return m_value; }
     std::string toString();

@@ -1,5 +1,4 @@
 #include "eScanType.h"
-// #include "eTokenType.h"
 #include "CCalculate.h"
 
 void CCalculate::scan(const char ch) {
