@@ -40,7 +40,8 @@ public:
     /** Append a character, including `.` decimal and `_` fraction. */
     void append(const char ch);
     /**
-     * Instantiates a new TTokenValue representing the current string value.
+     * Instantiates a new TTokenValue or TTokenFracton that represents the 
+     * current string value.
      */
     TToken* toToken();
     std::string toString();

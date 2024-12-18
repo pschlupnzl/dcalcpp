@@ -23,8 +23,10 @@ void CCalculate::evalEquation(IEvalEquationOptions &options) {
         TToken* pvoThisValop = m_pvoEquation[iThisPt];
         switch (pvoThisValop->type()) {
             case TOKEN_VALUE:
+            case TOKEN_FRACTION:
                 dsVals.push_back(pvoThisValop);
                 break;
+
 
             case TOKEN_BINARYOP:
                 if (dsVals.size() < 2) {
@@ -48,7 +50,11 @@ void CCalculate::evalEquation(IEvalEquationOptions &options) {
     }
 
     // Final answer.
+    // TODO: MEMORY LEAK! Take copy of dsVals[0] instead.
     m_presult = dsVals[0];
+    if (m_presult->type() == TOKEN_FRACTION) {
+        ((TTokenFraction*)m_presult)->simplify();
+    }
 }
 
 // void CCalculate::forEach(void f(const TScan *scan))

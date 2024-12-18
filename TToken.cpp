@@ -1,6 +1,6 @@
-#include <iostream>
 #include <sstream>
 #include <stdlib.h>
+#include <numeric> // for gcd
 #include "TToken.h"
 
 /** Size of buffer for displaying a TTokenValue string. */
@@ -12,43 +12,29 @@ std::string TTokenValue::toString() {
   return std::string(buffer);
 }
 
+void TTokenFraction::simplify() {
+    // TODO: NEGATIVE!
+    m_whole += m_num / m_denom;
+    m_num -= m_whole * m_denom;
+    int gcd = std::gcd(m_num, m_denom);
+    m_num /= gcd;
+    m_denom /= gcd;
+    setValue();
+}
+
+bool TTokenFraction::toFractionParts(int *pnum, int *pdenom)
+{
+    *pnum = m_whole * m_denom + m_num;
+    *pdenom = m_denom;
+    return true;
+}
+
 std::string TTokenFraction::toString()
 {
     char buffer[TTOKENVALUE_BUFFER_SIZE];
     snprintf(buffer, TTOKENVALUE_BUFFER_SIZE, "%i~%i/%i", m_whole, m_num, m_denom);
     return std::string(buffer);
 }
-
-
-TToken* TTokenBinaryOp::evaluate(TToken* pArg1, TToken* pArg2) {
-    /** Numerical arguments for unary or binary operators. */
-    TTokenValue* dArg1 = pArg1->type() == TOKEN_VALUE ? (TTokenValue*)pArg1 : nullptr;
-    TTokenValue* dArg2 = pArg2->type() == TOKEN_VALUE ? (TTokenValue*)pArg2 : nullptr;
-    /** Evaluated value for numerical tokens. */
-    double dVal;
-
-    switch (m_action) {
-        case ACTION_ADD:
-            dVal = dArg1->value() + dArg2->value();
-            break;
-
-        case ACTION_SUB:
-            dVal = dArg1->value() - dArg2->value();
-            break;
-
-        case ACTION_MULT:
-        case ACTION_MULTNEG:
-            dVal = dArg1->value() * dArg2->value();
-            break;
-
-        case ACTION_DIV:
-            dVal = dArg1->value() / dArg2->value();
-            break;
-    }
-
-    return new TTokenValue(dVal);
-}
-
 
 std::string TTokenBinaryOp::toString() {
     std::string str = std::string(

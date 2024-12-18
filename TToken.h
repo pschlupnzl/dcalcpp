@@ -63,6 +63,8 @@ protected:
     // bool m_solve;
 public:
     TTokenResultBase(eTokenType type) : TToken(type) { m_value = 0; }
+    /** Returns the numerical value of this token. */
+    double value() { return m_value; }
 };
 
 /**
@@ -76,8 +78,6 @@ public:
     {
         m_value = value;
     }
-    /** Return the numerical value of this token. */
-    double value() { return m_value; }
     std::string toString();
 };
 
@@ -87,6 +87,10 @@ private:
     int m_num;
     int m_denom;
 
+    /** Update the `m_value` of the result base class. */
+    void setValue() {
+        m_value = ((double)m_whole) + ((double)m_num) / ((double)(m_denom));
+    }
 public:
     TTokenFraction() : TTokenResultBase(TOKEN_FRACTION) { };
     TTokenFraction(int whole, int num, int denom)
@@ -94,8 +98,15 @@ public:
         m_whole = whole;
         m_num = num;
         m_denom = denom;
-        m_value = m_whole + (double) m_num / ((double) m_denom || 1);
+        setValue();
     }
+    /**
+     * Fills the numerator and denominator references with the values of this
+     * token represented as an imporper fraction, i.e. without whole number.
+     */
+    bool toFractionParts(int* pnum, int* pdenom);
+    /** Simplifies the fraction. */
+    void simplify();
     std::string toString();
 };
 

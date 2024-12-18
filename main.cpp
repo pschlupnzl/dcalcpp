@@ -26,7 +26,8 @@ int main(int argc, char **argv) {
         // "1+2*3";
         // "11";
         // "11+22*33";
-        "1_2_4";
+        // "1_2_4";
+        "1_2+2_3";
 
     for (int k = 1; k > 0; k--) {
         calc.reset();
@@ -42,25 +43,20 @@ int main(int argc, char **argv) {
 
         std::cout << calc.toString() << std::endl;
 
-        // calc.forEach([](TScan* scan) {
-        //     std::cout << "scan: " << scan->toString() << std::endl;
+        // int16_t cx = 0, cy = 20;
+        // calc.forEach([&cx, &cy](TScan* scan) {
+        //     eScanType type = scan->type();
+        //     const char* str = scan->toString().c_str();
+        //     int16_t tx, ty;
+        //     std::cout << cx << " " << str << std::endl;
+        //     // uint16_t tw, th;
+        //     // lcd.getTextBounds(str, cx, cy, &tx, &ty, &tw, &th);
+        //     // lcd.drawRect(tx, ty, tw, th, DISPLAY_FG2);
+        //     // lcd.setCursor(cx, cy);
+        //     // lcd.print(str);
+        //     cx += strlen(str);
+
         // });
-
-        int16_t cx = 0, cy = 20;
-
-        calc.forEach([&cx, &cy](TScan* scan) {
-            eScanType type = scan->type();
-            const char* str = scan->toString().c_str();
-            int16_t tx, ty;
-            std::cout << cx << " " << str << std::endl;
-            // uint16_t tw, th;
-            // lcd.getTextBounds(str, cx, cy, &tx, &ty, &tw, &th);
-            // lcd.drawRect(tx, ty, tw, th, DISPLAY_FG2);
-            // lcd.setCursor(cx, cy);
-            // lcd.print(str);
-            cx += strlen(str);
-
-        });
 
     }
     return 0;

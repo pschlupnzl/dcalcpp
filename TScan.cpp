@@ -1,4 +1,3 @@
-#include <iostream>
 #include "TScan.h"
 
 bool TScanNumber::toFractionParts(int *pwhole, int *pnum, int *pdenom)
@@ -12,7 +11,6 @@ bool TScanNumber::toFractionParts(int *pwhole, int *pnum, int *pdenom)
     size_t index = copy.find('_');
     int v0 = std::stoi(copy.substr(0, index));
     copy.erase(0, index + 1);
-    std::cout << "copy=" << copy << " v0=" << v0 << " | m_tok=" << m_tok << std::endl;
     if (m_fractionParts == 1) {
         *pnum = v0;
         *pdenom = std::stoi(copy);
@@ -54,7 +52,6 @@ TToken *TScanNumber::toToken()
     size_t index = copy.find('_');
     int v0 = std::stoi(copy.substr(0, index));
     copy.erase(0, index + 1);
-    std::cout << "copy=" << copy << " v0=" << v0 << " | m_tok=" << m_tok << std::endl;
     if (m_fractionParts == 1) {
         return new TTokenFraction(0, v0, std::stoi(copy));
     }
@@ -63,8 +60,6 @@ TToken *TScanNumber::toToken()
     int v1 = std::stoi(copy.substr(0, index));
     copy.erase(0, index + 1);
     int v2 = std::stoi(copy);
-
-    ////std::cout << "copy=" << copy << " v0=" << v0 << " v1=" << v1 << " v2=" << v2 << " | m_tok=" << m_tok << std::endl;
 
     return new TTokenFraction(v0, v1, v2);
 }
