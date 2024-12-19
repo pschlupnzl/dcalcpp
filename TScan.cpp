@@ -2,27 +2,34 @@
 
 bool TScanNumber::toFractionParts(int *pwhole, int *pnum, int *pdenom)
 {
-    *pwhole = *pnum = *pdenom = 0;
+    *pwhole = *pnum = 0;
+    *pdenom = 1;
     if (m_fractionParts < 1) {
         return false;
     }
 
+    /** Copy of string to be tokenized. */
     std::string copy = std::string(m_tok);
+    /** Number of characters remaining in string. */
+    size_t rem = copy.length();
+
     size_t index = copy.find('_');
     int v0 = std::stoi(copy.substr(0, index));
+    rem -= index + 1;
     copy.erase(0, index + 1);
     if (m_fractionParts == 1) {
         *pnum = v0;
-        *pdenom = std::stoi(copy);
+        *pdenom = rem <= 0 ? 1 : std::stoi(copy);
         return true;
     }
 
     index = copy.find('_');
     int v1 = std::stoi(copy.substr(0, index));
+    rem -= index + 1;
     copy.erase(0, index + 1);
     *pwhole = v0;
     *pnum = v1;
-    *pdenom = std::stoi(copy);
+    *pdenom = rem <= 0 ? 1 : std::stoi(copy);
     return true;
 }
 
