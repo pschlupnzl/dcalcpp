@@ -27,11 +27,6 @@ private:
     std::string m_tok;
     bool m_hasDecimal;
     int m_fractionParts;
-    /**
-     * Parse the token string into fraction parts, returning a value indicating
-     * whether the fraction was parsed.
-     */
-    bool toFractionParts(int* pwhole, int* pnum, int* pdenom);
 public:
     TScanNumber() : TScan(SCAN_NUMBER) {
         m_hasDecimal = false;
@@ -40,6 +35,11 @@ public:
     ~TScanNumber() { }
     /** Append a character, including `.` decimal and `_` fraction. */
     void append(const char ch);
+    /**
+     * Parse the token string into fraction parts, returning a value indicating
+     * whether the fraction was parsed.
+     */
+    bool toFractionParts(int* pwhole, int* pnum, int* pdenom);
     /**
      * Instantiates a new TTokenValue or TTokenFracton that represents the 
      * current string value.
@@ -64,11 +64,12 @@ public:
         return new TTokenBinaryOp(m_action, iBrktOff);
     }
     std::string toString() {
-        return m_action == BINARY_OP_ACTION_ADD ? "+" :
-            m_action == BINARY_OP_ACTION_MULT ? "*" :
-            m_action == BINARY_OP_ACTION_SUB ? "-" :
-            m_action == BINARY_OP_ACTION_DIV ? "÷" :
-            "?";
+        return std::string(
+          m_action == BINARY_OP_ACTION_ADD ? " + " :
+          m_action == BINARY_OP_ACTION_MULT ? " x " :
+          m_action == BINARY_OP_ACTION_SUB ? " - " :
+          m_action == BINARY_OP_ACTION_DIV ? " ÷ " :
+          "?");
     }
 };
 

@@ -38,12 +38,12 @@ std::string TTokenFraction::toString()
 
 std::string TTokenBinaryOp::toString() {
     std::string str = std::string(
-        m_action == BINARY_OP_ACTION_MULT ? "*" :
-        m_action == BINARY_OP_ACTION_MULTNEG ? "#" :
-        m_action == BINARY_OP_ACTION_DIV ? "÷" :
-        m_action == BINARY_OP_ACTION_ADD ? "+" :
-        m_action == BINARY_OP_ACTION_SUB ? "-" :
-        "??");
+        m_action == BINARY_OP_ACTION_ADD ? " + " :
+        m_action == BINARY_OP_ACTION_MULT ? " x " :
+        m_action == BINARY_OP_ACTION_MULTNEG ? " -x " :
+        m_action == BINARY_OP_ACTION_SUB ? " - " :
+        m_action == BINARY_OP_ACTION_DIV ? " ÷ " :
+        "?");
     if (m_asPercent) {
         str += "%";
     } else if (m_asTax) {
