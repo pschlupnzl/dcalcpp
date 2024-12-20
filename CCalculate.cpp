@@ -18,12 +18,12 @@ void reset_array(std::vector<T*>& arr) {
     // I tried making m_scan and m_pvoEquation of type std::vector<TToken&>
     // but that didn't work either.
     // I'm just gonna run with this for now.
-    // while (arr.size() > 0) {
-    //     T* item = arr.back();
-    //     arr.pop_back();
-    //     delete item;
-    // }
-    arr.clear();
+    while (arr.size() > 0) {
+        T* item = arr.back();
+        arr.pop_back();
+        delete item;
+    }
+    // arr.clear();
 }
 
 void CCalculate::reset() {

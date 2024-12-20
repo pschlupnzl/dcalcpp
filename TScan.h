@@ -13,6 +13,7 @@ public:
     TScan(eScanType type) {
         m_type = type;
     }
+    virtual ~TScan() { }
     /** Returns the type of this scanned token. */
     eScanType type() { return m_type; }
     virtual std::string toString() {
@@ -36,7 +37,7 @@ public:
         m_hasDecimal = false;
         m_fractionParts = 0;
     };
-
+    ~TScanNumber() { }
     /** Append a character, including `.` decimal and `_` fraction. */
     void append(const char ch);
     /**
@@ -54,6 +55,7 @@ public:
     TScanBinaryOp(eBinaryOpAction action) : TScan(SCAN_BINARYOP) {
         m_action = action;
     }
+    ~TScanBinaryOp() { }
     /**
      * Instantiates a new TtokenBinaryOp representing the current operation.
      * @param iBrktOff Current bracket offset for operator precedence.
@@ -73,12 +75,14 @@ public:
 class TScanOpen : public TScan {
 public:
     TScanOpen() : TScan(SCAN_OPEN) { };
+    ~TScanOpen() { }
     std::string toString() { return "("; }
 };
 
 class TScanClose : public TScan {
 public:
     TScanClose() : TScan(SCAN_CLOSE) { };
+    ~TScanClose() { }
     std::string toString() { return ")"; }
 };
 

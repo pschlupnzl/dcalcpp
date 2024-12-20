@@ -37,6 +37,7 @@ public:
      */
     TToken(eTokenType type)
         : m_type(type) {}
+    virtual ~TToken() { }
 
     /** Returns the type of entity represented by this token. */
     eTokenType type() const { return m_type; }
@@ -63,6 +64,7 @@ protected:
     // bool m_solve;
 public:
     TTokenResultBase(eTokenType type) : TToken(type) { m_value = 0; }
+    virtual ~TTokenResultBase() { }
     /** Returns the numerical value of this token. */
     double value() { return m_value; }
 };
@@ -100,6 +102,7 @@ public:
         m_denom = denom;
         setValue();
     }
+    ~TTokenFraction() { }
     /**
      * Fills the numerator and denominator references with the values of this
      * token represented as an imporper fraction, i.e. without whole number.
@@ -138,7 +141,7 @@ public:
             + (m_asTax || m_asPercent ? OP_PERCENTOFFSET : 0)
             + iBrktOff * OP_BRACKETOFFSET;
     }
-
+    ~TTokenBinaryOp() { }
     /** Sets this operator's precedence, including the bracket offset. */
     void setPrecedence(int iBrktOff);
     /** Returns this operator's precedence. */
