@@ -65,14 +65,17 @@ private:
     uint16_t tww = whole ? addString(numberToString(whole), cx, cy, 0) : 0;
     tww += m_hpad;
 
-    uint16_t twn = addString(numberToString(num), cx, cy, 1, tww, m_vnum);
-    uint16_t twd = addString(numberToString(denom), cx, cy, 1, tww, m_vdenom);
-    if (twd > twn) {
-      m_rects[1].dx += (twd - twn) >> 1;
-      tw += tww + twd;
-    } else {
-      m_rects.back().dx += (twn - twd) >> 1;
-      tw += tww + twn;
+    if (num) {
+      uint16_t twn = addString(numberToString(num), cx, cy, 1, tww, m_vnum);
+      uint16_t twd = addString(numberToString(denom), cx, cy, 1, tww, m_vdenom);
+      // Center-align the shorter string.
+      if (twd > twn) {
+        m_rects[1].dx += (twd - twn) >> 1;
+        tw += tww + twd;
+      } else {
+        m_rects.back().dx += (twn - twd) >> 1;
+        tw += tww + twn;
+      }
     }
     return tw;
   }
