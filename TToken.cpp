@@ -14,8 +14,9 @@ std::string TTokenValue::toString() {
 
 void TTokenFraction::simplify() {
     // TODO: NEGATIVE!
-    m_whole += m_num / m_denom;
-    m_num -= m_whole * m_denom;
+    int improper = m_num / m_denom;
+    m_whole += improper;
+    m_num -= improper * m_denom;
     int gcd = std::gcd(m_num, m_denom);
     m_num /= gcd;
     m_denom /= gcd;
@@ -29,10 +30,21 @@ bool TTokenFraction::toFractionParts(int *pnum, int *pdenom)
     return true;
 }
 
+bool TTokenFraction::toFractionParts(int *pwhole, int *pnum, int *pdenom) {
+    *pwhole = m_whole;
+    *pnum = m_num;
+    *pdenom = m_denom;
+    return true;
+}
+
 std::string TTokenFraction::toString()
 {
     char buffer[TTOKENVALUE_BUFFER_SIZE];
-    snprintf(buffer, TTOKENVALUE_BUFFER_SIZE, "%i~%i/%i", m_whole, m_num, m_denom);
+    if (m_whole) {
+        snprintf(buffer, TTOKENVALUE_BUFFER_SIZE, "%i~%i/%i", m_whole, m_num, m_denom);
+    } else {
+        snprintf(buffer, TTOKENVALUE_BUFFER_SIZE, "%i/%i", m_num, m_denom);
+    }
     return std::string(buffer);
 }
 

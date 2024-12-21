@@ -35,6 +35,12 @@ private:
   drawRect_t* m_drawRect;
   print_t* m_print;
   std::vector<LcdRect_t> m_rects;
+  /** Horizontal pad between digits in a number. */
+  int16_t m_hpad;
+  /** Vertical offset from cursor to reach numerator. */
+  int16_t m_vnum;
+  /** Vertical offset from cursor to reach denominator. */
+  int16_t m_vdenom;
 
   uint16_t addString(std::string str, int16_t cx, int16_t cy, int size = 0, int16_t dx = 0, int16_t dy = 0) {
     LcdRect_t rect({
@@ -52,6 +58,25 @@ private:
     m_rects.push_back(rect);
     return tw;
   }
+
+  /** Render fraction with whole and fractional parts. */
+  int16_t addFraction(int whole, int num, int denom, int16_t cx, int16_t cy) {
+    uint16_t tw = 0;
+    uint16_t tww = whole ? addString(numberToString(whole), cx, cy, 0) : 0;
+    tww += m_hpad;
+
+    uint16_t twn = addString(numberToString(num), cx, cy, 1, tww, m_vnum);
+    uint16_t twd = addString(numberToString(denom), cx, cy, 1, tww, m_vdenom);
+    if (twd > twn) {
+      m_rects[1].dx += (twd - twn) >> 1;
+      tw += tww + twd;
+    } else {
+      m_rects.back().dx += (twn - twd) >> 1;
+      tw += tww + twn;
+    }
+    return tw;
+  }
+
 public:
   LcdToken(
     setCursor_t* setCursor,
@@ -73,42 +98,40 @@ public:
     }
   }
 
+  void setMetrics(
+    int16_t hpad,
+    int16_t vnum,
+    int16_t vdenom
+  ) {
+    m_hpad = hpad;
+    m_vnum = vnum;
+    m_vdenom = vdenom;
+  }
+
   void getBounds(TScan* scan, int16_t cx, int16_t cy, int16_t* out_tw) {
-    uint16_t tw = 0;
-    eScanType type = scan->type();
     int whole, num, denom;
-    if (type == SCAN_NUMBER 
-      && ((TScanNumber*)scan)->toFractionParts(&whole, &num, &denom)) {
-      uint16_t tww = addString(numberToString(whole), cx, cy, 0);
-      tww += 8;
-
-      uint16_t twn = addString(numberToString(num), cx, cy, 1, tww, -20);
-      uint16_t twd = addString(numberToString(denom), cx, cy, 1, tww, 0);
-      if (twd > twn) {
-        m_rects[1].dx += (twd - twn) >> 1;
-        tw += tww + twd;
-      } else {
-        m_rects.back().dx += (twn - twd) >> 1;
-        tw += tww + twn;
-      }
+    m_rects.clear();
+    if (
+      scan->type() == SCAN_NUMBER 
+      && ((TScanNumber*)scan)->toFractionParts(&whole, &num, &denom)
+    ) {
+      *out_tw = addFraction(whole, num, denom, cx, cy);
     } else {
-        tw += addString(scan->toString(), cx, cy, 0);
+      *out_tw = addString(scan->toString(), cx, cy, 0);
     }
-    // LcdRect_t rect({
-    //   dx: 0,
-    //   dy: 0,
-    //   size: 0,
-    //   str: new char[str.length() + 1]
-    // });
-    // std::strcpy(rect.str, str.c_str());
+  }
 
-    // int16_t tx, ty;
-    // uint16_t tw, th;
-    // m_setFont(rect.size);
-    // m_getTextBounds(rect.str, cx, cy, &tx, &ty, &tw, &th);
-    // m_rects.push_back(rect);
-
-    *out_tw = tw;
+  void getBounds(TToken* token, int16_t cx, int16_t cy) {
+    int whole, num, denom;
+    m_rects.clear();
+    if (
+      token->type() == TOKEN_FRACTION &&
+      ((TTokenFraction*)token)->toFractionParts(&whole, &num, &denom)
+    ) {
+      addFraction(whole, num, denom, cy, cy);
+    } else {
+      addString(token->toString(), cx, cy);
+    }
   }
 
   void print(int16_t cx, int16_t cy) {

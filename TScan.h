@@ -26,6 +26,7 @@ class TScanNumber : public TScan {
 private:
     std::string m_tok;
     bool m_hasDecimal;
+    /** Number of fraction parts, i.e. count of '_' characters in m_tok. */
     int m_fractionParts;
 public:
     TScanNumber() : TScan(SCAN_NUMBER) {

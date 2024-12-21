@@ -10,7 +10,10 @@ RUN apt-get update && apt-get install -y \
     libcpprest-dev \
     libboost-all-dev \
     libssl-dev \
-    cmake
+    cmake \
+    # ncurses library for terminal window display
+    # (not needed for hardware builds)
+    libncurses5-dev
 
 # Platformio
 RUN apt-get install -y \
@@ -21,7 +24,6 @@ RUN curl -fsSL -o get-platformio.py https://raw.githubusercontent.com/platformio
 RUN python3 get-platformio.py
 RUN export PATH=$PATH:/root/.platformio/penv/bin/
 # RUN platformio home
-
 
 # # Copy the source code into the container
 # COPY ok_api.cpp .

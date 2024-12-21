@@ -195,7 +195,7 @@ void redraw (bool erase=false) {
       type == SCAN_BINARYOP ? ST77XX_BLUE
       : DISPLAY_FG);
 
-    LcdToken lcdToken(&setCursor, &setFont, &getTextBounds, &drawRect, &print);
+    LcdToken lcdToken(&setCursor, &setFont, &getTextBounds, &drawRect, &print, 8, -20, 0);
     int16_t out_tw;
     lcdToken.getBounds(scan, cx, cy, &out_tw);
     lcdToken.print(cx, cy);

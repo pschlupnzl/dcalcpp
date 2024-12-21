@@ -2,8 +2,8 @@
 
 bool TScanNumber::toFractionParts(int *pwhole, int *pnum, int *pdenom)
 {
-    *pwhole = *pnum = 0;
-    *pdenom = 1;
+    *pwhole = *pnum = *pdenom = 0;
+
     if (m_fractionParts < 1) {
         return false;
     }
@@ -13,23 +13,45 @@ bool TScanNumber::toFractionParts(int *pwhole, int *pnum, int *pdenom)
     /** Number of characters remaining in string. */
     size_t rem = copy.length();
 
-    size_t index = copy.find('_');
-    int v0 = std::stoi(copy.substr(0, index));
-    rem -= index + 1;
-    copy.erase(0, index + 1);
-    if (m_fractionParts == 1) {
-        *pnum = v0;
-        *pdenom = rem <= 0 ? 1 : std::stoi(copy);
-        return true;
+    int parts[3] = { 0, 0, 0 };
+    for (int k = 0; k <= m_fractionParts && rem > 0; ++k) {
+        size_t index = copy.find('_');
+        parts[k] = std::stoi(copy.substr(0, index));
+        rem -= index + 1;
+        copy.erase(0, index + 1);
     }
 
-    index = copy.find('_');
-    int v1 = std::stoi(copy.substr(0, index));
-    rem -= index + 1;
-    copy.erase(0, index + 1);
-    *pwhole = v0;
-    *pnum = v1;
-    *pdenom = rem <= 0 ? 1 : std::stoi(copy);
+    if (m_fractionParts == 1) {
+        // "1_" or "1_2". 
+        *pwhole = 0;
+        *pnum = parts[0];
+        *pdenom = parts[1];
+    } else if (m_fractionParts == 2) {
+        // "1_2_" or "1_2_3"
+        *pwhole = parts[0];
+        *pnum = parts[1];
+        *pdenom = parts[2];
+    }
+
+    // size_t rem = copy.length();
+
+    // size_t index = copy.find('_');
+    // int v0 = std::stoi(copy.substr(0, index));
+    // rem -= index + 1;
+    // copy.erase(0, index + 1);
+    // if (m_fractionParts == 1) {
+    //     *pnum = v0;
+    //     *pdenom = rem <= 0 ? 0 : std::stoi(copy);
+    //     return true;
+    // }
+
+    // index = copy.find('_');
+    // int v1 = std::stoi(copy.substr(0, index));
+    // rem -= index + 1;
+    // copy.erase(0, index + 1);
+    // *pwhole = v0;
+    // *pnum = v1;
+    // *pdenom = rem <= 0 ? 0 : std::stoi(copy);
     return true;
 }
 
@@ -76,7 +98,11 @@ std::string TScanNumber::toString()
     int whole, num, denom;
     if (toFractionParts(&whole, &num, &denom)) {
         char buffer[32];
-        snprintf(buffer, 32, "%i_%i/%i", whole, num, denom);
+        if (whole == 0) {
+            snprintf(buffer, 32, "%i/%i", num, denom);
+        } else {
+            snprintf(buffer, 32, "%i_%i/%i", whole, num, denom);
+        }
         return std::string(buffer);
     }
     return std::string(m_tok);

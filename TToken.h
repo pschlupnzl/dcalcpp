@@ -91,7 +91,8 @@ private:
 
     /** Update the `m_value` of the result base class. */
     void setValue() {
-        m_value = ((double)m_whole) + ((double)m_num) / ((double)(m_denom));
+        double denom = m_denom == 0 ? 1.00 : (double)m_denom;
+        m_value = ((double)m_whole) + ((double)m_num) / denom;
     }
 public:
     TTokenFraction() : TTokenResultBase(TOKEN_FRACTION) { };
@@ -108,6 +109,8 @@ public:
      * token represented as an imporper fraction, i.e. without whole number.
      */
     bool toFractionParts(int* pnum, int* pdenom);
+    /** Returns the fraction parts as proper fraction with whole number. */
+    bool toFractionParts(int* pwhole, int* pnum, int* pdenom);
     /** Simplifies the fraction. */
     void simplify();
     std::string toString();

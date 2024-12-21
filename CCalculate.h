@@ -110,6 +110,10 @@ public:
 
     /** Returns a string representation of the entire calculation. */
     std::string toString();
+    /** Returns a reference to the result token, or nullptr if not solved. */
+    TToken* result() {
+      return m_presult;
+    }
 };
 
 #endif /* CCALCULATE_H */

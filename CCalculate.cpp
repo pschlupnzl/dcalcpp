@@ -21,7 +21,7 @@ void reset_array(std::vector<T*>& arr) {
     while (arr.size() > 0) {
         T* item = arr.back();
         arr.pop_back();
-        delete item;
+        // delete item;
     }
     // arr.clear();
 }
@@ -41,8 +41,11 @@ void CCalculate::reset_pvoEquation() {
 }
 
 void CCalculate::reset_result() {
+    // TODO:
+    // Because we're *NOT* taking a copy of dsVals[0] at the end of
+    // evalEquation, we do not need to free anything here.
     if (m_presult != nullptr) {
-        delete m_presult;
+        // delete m_presult;
         m_presult = nullptr;
     }
 }
