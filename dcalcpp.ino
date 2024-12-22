@@ -17,7 +17,7 @@
 
 #include "LcdToken.h"
 
-#include <iostream>
+////#include <iostream>
 #include <vector>
 #include <string>
 #include <cstring>
@@ -40,104 +40,19 @@
 // See https://rgbcolorpicker.com/565
 #define ST77XX_GRAY 0x7BEF
 #define ST77XX_LIGHTGRAY 0xC618
+// #define ST77XX_DARKGRAY 0x4208 // 8-16-8
+#define ST77XX_DARKGRAY 0x2104 // 4-8-4
 
+// #define DARK_THEME
+#ifdef DARK_THEME
+#define DISPLAY_FG ST77XX_LIGHTGRAY
+#define DISPLAY_FG2 ST77XX_DARKGRAY
+#define DISPLAY_BG ST77XX_BLACK
+#else
 #define DISPLAY_FG ST77XX_BLACK
 #define DISPLAY_FG2 ST77XX_LIGHTGRAY
 #define DISPLAY_BG ST77XX_WHITE
-
-
-
-// typedef struct {
-//   int16_t cx, cy;
-//   int16_t tx, ty;
-//   uint16_t tw, th;
-//   uint16_t color;
-//   char* str;
-//   const GFXfont* font;
-// } TLcdRect;
-
-
-// /**
-// * Class to handle the rendering of a token on the LCD.
-// */
-// class LcdToken {
-// private:
-//   std::vector<TLcdRect> m_rects;
-
-//   /** Add a string to the vector of strings. */
-//   uint16_t addString(Adafruit_ST7789 &lcd, std::string str, int16_t cx, int16_t cy, const GFXfont* font, uint16_t color) {
-//     TLcdRect rect = {
-//       cx: cx,
-//       cy: cy,
-//       tx: 0,
-//       ty: 0,
-//       tw: 0,
-//       th: 0,
-//       color: color,
-//       str: new char[str.length() + 1],
-//       font: &FreeSansBold18pt7b
-//     };
-//     std::strcpy (rect.str, str.c_str());
-//     lcd.setFont(rect.font);
-//     lcd.getTextBounds(rect.str, cx, cy, &rect.tx, &rect.ty, &rect.tw, &rect.th);
-//     m_rects.push_back(rect);
-//     return rect.tw;
-//   }
-// public:
-//   /**
-//   * Initialize a new instance of the LcdToken class with the given token.
-//   */
-//   LcdToken(TScan* src, Adafruit_ST7789 &lcd, int16_t cx, int16_t cy, uint16_t* out_tw) {
-//     // uint16_t tw = addString(
-//     //   lcd,
-//     //   src->toString(),
-//     //   cx,
-//     //   cy,
-//     //   &FreeSansBold18pt7b,
-//     //   src->type() == SCAN_BINARYOP ? ST77XX_GREEN : DISPLAY_FG);
-//     // *out_tw = tw;
-
-//     std::string str = src->toString();
-//     TLcdRect rect = {
-//       cx: cx,
-//       cy: cy,
-//       tx: 0,
-//       ty: 0,
-//       tw: 0,
-//       th: 0,
-//       color: src->type() == SCAN_BINARYOP ? ST77XX_BLUE : DISPLAY_FG,
-//       str: new char[str.length() + 1],
-//       font: &FreeSansBold18pt7b
-//     };
-//     std::strcpy (rect.str, str.c_str());
-//     lcd.setFont(rect.font);
-//     lcd.getTextBounds(rect.str, cx, cy, &rect.tx, &rect.ty, &rect.tw, &rect.th);
-//     m_rects.push_back(rect);
-//     *out_tw = rect.tw;
-//   }
-
-//   /** Releases resources allocated by the token. */
-//   ~LcdToken() {
-//     // for (TLcdRect& rect : m_rects) {
-//     //   delete[] rect.str;
-//     // }
-//   }
-
-//   /** Draw the token. */
-//   void print(Adafruit_ST7789 &lcd, int16_t cx, int16_t cy) {
-//     for (TLcdRect rect : m_rects) {
-//       lcd.drawRect(rect.tx, rect.ty, rect.tw, rect.th, ST77XX_BLUE);
-//       lcd.setTextColor(rect.color);
-//       lcd.setFont(rect.font);
-//       lcd.setCursor(rect.cx, rect.cy);
-//       lcd.print(rect.str);
-//     }
-//   }
-// };
-
-
-
-
+#endif
 
 
 Adafruit_ST7789 lcd = Adafruit_ST7789(LCD_CS, LCD_DC, LCD_RST);
@@ -150,7 +65,6 @@ IEvalEquationOptions coptions = {
 };
 
 void setCursor(int16_t cx, int16_t cy) {
-  std::cout << "setCursor(" << cx << ", " << cy << ")" << std::endl;
   lcd.setCursor(cx, cy);
 }
 void setFont(int size) {
@@ -169,6 +83,8 @@ void print(const char* str) {
   lcd.print(str);
 }
 
+bool showWorking = true;
+
 /**
 * Update the content in the lcd screen.
 * @param erase Optional value indicating that the screen should be cleared
@@ -179,50 +95,48 @@ void redraw (bool erase=false) {
     lcd.fillScreen(DISPLAY_BG);
   }
 
-  lcd.setFont(&FreeSans12pt7b);
-  lcd.setTextColor(DISPLAY_FG2);
-  lcd.setCursor(-30, 24);
-  // lcd.print(message);
-  lcd.print(String(ccalc.toString().c_str()));
-
+  if (showWorking) {
+    lcd.setFont(&FreeSans12pt7b);
+    lcd.setTextColor(DISPLAY_FG2);
+    lcd.setCursor(0, 24);
+    lcd.print(String(ccalc.toString().c_str()));
+  }
 
   int16_t cx = 0, cy = 48;
+  LcdToken lcdToken(&setCursor, &setFont, &getTextBounds, &drawRect, &print);
+  lcdToken.setMetrics(8, -20, 0);
 
   // lcd.setFont(&FreeSans24pt7b);
-  ccalc.forEach([lcd, &cx, &cy](TScan* scan) {
+  ccalc.forEach([lcd, &lcdToken, &cx, &cy](TScan* scan) {
     eScanType type = scan->type();
     lcd.setTextColor(
       type == SCAN_BINARYOP ? ST77XX_BLUE
       : DISPLAY_FG);
 
-    LcdToken lcdToken(&setCursor, &setFont, &getTextBounds, &drawRect, &print, 8, -20, 0);
     int16_t out_tw;
     lcdToken.getBounds(scan, cx, cy, &out_tw);
     lcdToken.print(cx, cy);
     cx += out_tw;
-    // LcdToken lcdToken(scan, lcd, cx, cy, &out_tw);
-    // lcdToken.print(lcd, cx, cy);
-    // cx += out_tw;
-
-    // eScanType type = scan->type();
-    // lcd.setTextColor(
-    //   type == SCAN_BINARYOP ? ST77XX_BLUE
-    //   : DISPLAY_FG);
-    // const char* str = scan->toString().c_str();
-    // int16_t tx, ty;
-    // uint16_t tw, th;
-    // lcd.getTextBounds(str, cx, cy, &tx, &ty, &tw, &th);
-    // lcd.drawRect(tx, ty, tw, th, ST77XX_RED);
-    // lcd.setCursor(cx, cy);
-    // lcd.print(str);
-    // cx += tw + 8;
-    // // cy += 12;
   });
+
+  lcd.setCursor(20, 120);
+  lcd.setTextColor(DISPLAY_FG);
+  setFont(0);
+  TToken* result = ccalc.result();
+  if (result != nullptr) {
+    lcd.print("= ");
+    cx = lcd.getCursorX();
+    cy = lcd.getCursorY();
+    lcdToken.getBounds(result, cx, cy);
+    lcdToken.print(cx, cy);
+  }
 }
 
 // const char* startEquation = "1+2*(3+4";
 // const char* startEquation = "1+2*3";
-const char* startEquation = "12_2_13*4_5_6";
+const char* startEquation = 
+  "1_2";
+  // "12_2_13*4_5_6";
 
 void setup() {
   Serial.begin(115200);
@@ -254,6 +168,12 @@ void loop() {
     //     message = message.substring(0, n - 1);
     //   }
     //   redraw(true);
+    // } else if (ch == 'q') {
+    //   // resetFunc();
+    //   abort();
+    } else if (ch == '`') {
+      showWorking = !showWorking;
+      redraw(true);
     } else {
       ccalc.scan(ch);
       ccalc.parseEquation();

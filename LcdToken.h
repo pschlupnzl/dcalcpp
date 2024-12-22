@@ -21,11 +21,6 @@ typedef struct {
 } LcdRect_t;
 
 #define NUMBER_TO_STRING_BUFFER_SIZE 32
-char buffer[NUMBER_TO_STRING_BUFFER_SIZE];
-std::string numberToString(int n) {
-    snprintf(buffer, NUMBER_TO_STRING_BUFFER_SIZE, "%i", n);
-    return std::string(buffer);
-}
 
 class LcdToken {
 private:
@@ -41,6 +36,12 @@ private:
   int16_t m_vnum;
   /** Vertical offset from cursor to reach denominator. */
   int16_t m_vdenom;
+
+  std::string numberToString(int n) {
+    char numberToStringBuffer[NUMBER_TO_STRING_BUFFER_SIZE];
+      snprintf(numberToStringBuffer, NUMBER_TO_STRING_BUFFER_SIZE, "%i", n);
+      return std::string(numberToStringBuffer);
+  }
 
   uint16_t addString(std::string str, int16_t cx, int16_t cy, int size = 0, int16_t dx = 0, int16_t dy = 0) {
     LcdRect_t rect({
@@ -67,7 +68,7 @@ private:
 
     if (num) {
       uint16_t twn = addString(numberToString(num), cx, cy, 1, tww, m_vnum);
-      uint16_t twd = addString(numberToString(denom), cx, cy, 1, tww, m_vdenom);
+      uint16_t twd = !denom ? 0 : addString(numberToString(denom), cx, cy, 1, tww, m_vdenom);
       // Center-align the shorter string.
       if (twd > twn) {
         m_rects[1].dx += (twd - twn) >> 1;

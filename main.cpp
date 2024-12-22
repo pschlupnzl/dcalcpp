@@ -6,7 +6,7 @@
 #include "CCalculate.h"
 #include "TToken.h"
 
-#include <ncurses.h>
+// #include <ncurses.h>
 #include "LcdToken.h"
 
 /*
@@ -40,80 +40,80 @@ IEvalEquationOptions options = {
 #define uint16_t unsigned short int
 #endif /* uint16_t */
 
-void setCursor(int16_t cx, int16_t cy) {
-    move(cy, cx);
-}
-int currentFontSize = 0;
-void setFont(int size) {
-    currentFontSize = size;
-}
-void getTextBounds(const char* str, int16_t cx, int16_t cy, int16_t* tx, int16_t* ty, uint16_t* tw, uint16_t* th) {
-    *tx = cx;
-    *ty = cy;
-    *tw = strlen(str);
-    *th = 1;
-}
-void drawRect(int16_t tx, int16_t ty, uint16_t tw, uint16_t th, uint16_t color) {
-    // nop
-}
-void print(const char* str) {
-    printw("%s", str);
-}
+// void setCursor(int16_t cx, int16_t cy) {
+//     move(cy, cx);
+// }
+// int currentFontSize = 0;
+// void setFont(int size) {
+//     currentFontSize = size;
+// }
+// void getTextBounds(const char* str, int16_t cx, int16_t cy, int16_t* tx, int16_t* ty, uint16_t* tw, uint16_t* th) {
+//     *tx = cx;
+//     *ty = cy;
+//     *tw = strlen(str);
+//     *th = 1;
+// }
+// void drawRect(int16_t tx, int16_t ty, uint16_t tw, uint16_t th, uint16_t color) {
+//     // nop
+// }
+// void print(const char* str) {
+//     printw("%s", str);
+// }
 
-void redraw() {
-    clear();
-    mvprintw(0, 0, "DysCalculator - Press 'q' to exit.");
+// void redraw() {
+//     clear();
+//     mvprintw(0, 0, "DysCalculator - Press 'q' to exit.");
 
-    LcdToken lcdToken(&setCursor, &setFont, &getTextBounds, &drawRect, &print);
-    lcdToken.setMetrics(0, -1, +1);
-    int16_t cx, cy;
+//     LcdToken lcdToken(&setCursor, &setFont, &getTextBounds, &drawRect, &print);
+//     lcdToken.setMetrics(0, -1, +1);
+//     int16_t cx, cy;
     
-    cx = 0;
-    cy = 6;
-    move(cy, cx);
-    TToken* result = calc.result();
-    if (result == nullptr) {
-        printw("Type to enter an equation.");
-    } else {
-        // printw("= %s", ((TToken*)result)->toString().c_str());
-        lcdToken.getBounds(result, cx, cy);
-        lcdToken.print(cx, cy);
-    }
+//     cx = 0;
+//     cy = 6;
+//     move(cy, cx);
+//     TToken* result = calc.result();
+//     if (result == nullptr) {
+//         printw("Type to enter an equation.");
+//     } else {
+//         // printw("= %s", ((TToken*)result)->toString().c_str());
+//         lcdToken.getBounds(result, cx, cy);
+//         lcdToken.print(cx, cy);
+//     }
 
-    cx = 0;
-    cy = 2;
-    calc.forEach([&cx, &cy, &lcdToken](TScan* scan) {
-        int16_t out_tw;
-        lcdToken.getBounds(scan, cx, cy, &out_tw);
-        lcdToken.print(cx, cy);
-        cx += out_tw;
-    });
+//     cx = 0;
+//     cy = 2;
+//     calc.forEach([&cx, &cy, &lcdToken](TScan* scan) {
+//         int16_t out_tw;
+//         lcdToken.getBounds(scan, cx, cy, &out_tw);
+//         lcdToken.print(cx, cy);
+//         cx += out_tw;
+//     });
 
-    move(cy, cx);
-    refresh();
-}
+//     move(cy, cx);
+//     refresh();
+// }
 
-void interactive() {
-    initscr();
-    noecho();
+// void interactive() {
+//     // initscr();
+//     // noecho();
 
-    for (;;) {
-        calc.parseEquation();
-        calc.evalEquation(options);
-        redraw();
+//     // for (;;) {
+//     //     calc.parseEquation();
+//     //     calc.evalEquation(options);
+//     //     redraw();
 
-        int ch = getch();
-        // printw("%s", (char*)&ch);
-        if (ch == 'q') {
-            break;
-        } else if (ch == 0x1b) {
-            calc.reset();
-        } else {
-            calc.scan(ch);
-        }
-    }
-    endwin();
-}
+//     //     int ch = getch();
+//     //     // printw("%s", (char*)&ch);
+//     //     if (ch == 'q') {
+//     //         break;
+//     //     } else if (ch == 0x1b) {
+//     //         calc.reset();
+//     //     } else {
+//     //         calc.scan(ch);
+//     //     }
+//     // }
+//     // endwin();
+// }
 
 int main(int argc, char **argv) {
     const char* input = argc > 1 
@@ -131,7 +131,7 @@ int main(int argc, char **argv) {
         calc.scan(*pch);
     }
 
-    interactive();
+    // interactive();
 
     calc.parseEquation();
     calc.evalEquation(options);

@@ -1,7 +1,13 @@
+////#include <iostream>
 #include "TScan.h"
 
 bool TScanNumber::toFractionParts(int *pwhole, int *pnum, int *pdenom)
 {
+  // *pwhole = 1;
+  // *pnum = 2;
+  // *pdenom = 3;
+  // return true;
+
     *pwhole = *pnum = *pdenom = 0;
 
     if (m_fractionParts < 1) {
@@ -13,13 +19,25 @@ bool TScanNumber::toFractionParts(int *pwhole, int *pnum, int *pdenom)
     /** Number of characters remaining in string. */
     size_t rem = copy.length();
 
+    int k = 0;
     int parts[3] = { 0, 0, 0 };
-    for (int k = 0; k <= m_fractionParts && rem > 0; ++k) {
+    ////std::cout << "Scanning fractionParts=" << m_fractionParts << " copy='" << copy << "' rem=" << rem << std::endl;
+    for (; k <= m_fractionParts && rem > 0; ++k) {
+      ////std::cout << "Loop k=" << k;
+      // | Progression | m_fractionParts |
+      // | ----------- | --------------- |
+      // |           1 |               0 | Not parsed
+      // |          1_ |               1 |
+      // |         1_2 |               1 |
+      // |        1_2_ |               2 |
+      // |       1_2_3 |               3 |
         size_t index = copy.find('_');
         parts[k] = std::stoi(copy.substr(0, index));
         rem -= index + 1;
         copy.erase(0, index + 1);
+        ////std::cout << " index=" << index << " parts[k]=" << parts[k] << " rem=" << rem << " copy='" << copy << "'" << std::endl;
     }
+
 
     if (m_fractionParts == 1) {
         // "1_" or "1_2". 
@@ -33,25 +51,8 @@ bool TScanNumber::toFractionParts(int *pwhole, int *pnum, int *pdenom)
         *pdenom = parts[2];
     }
 
-    // size_t rem = copy.length();
+    ////std::cout << "Returning " << *pwhole << " " << *pnum << "/" << *pdenom << std::endl;
 
-    // size_t index = copy.find('_');
-    // int v0 = std::stoi(copy.substr(0, index));
-    // rem -= index + 1;
-    // copy.erase(0, index + 1);
-    // if (m_fractionParts == 1) {
-    //     *pnum = v0;
-    //     *pdenom = rem <= 0 ? 0 : std::stoi(copy);
-    //     return true;
-    // }
-
-    // index = copy.find('_');
-    // int v1 = std::stoi(copy.substr(0, index));
-    // rem -= index + 1;
-    // copy.erase(0, index + 1);
-    // *pwhole = v0;
-    // *pnum = v1;
-    // *pdenom = rem <= 0 ? 0 : std::stoi(copy);
     return true;
 }
 

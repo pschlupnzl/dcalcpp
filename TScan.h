@@ -69,7 +69,8 @@ public:
           m_action == BINARY_OP_ACTION_ADD ? " + " :
           m_action == BINARY_OP_ACTION_MULT ? " x " :
           m_action == BINARY_OP_ACTION_SUB ? " - " :
-          m_action == BINARY_OP_ACTION_DIV ? " ÷ " :
+        //   m_action == BINARY_OP_ACTION_DIV ? " ÷ " :
+          m_action == BINARY_OP_ACTION_DIV ? " / " :
           "?");
     }
 };

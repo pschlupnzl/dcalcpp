@@ -13,14 +13,16 @@ std::string TTokenValue::toString() {
 }
 
 void TTokenFraction::simplify() {
-    // TODO: NEGATIVE!
+  // TODO: NEGATIVE!
+  if (m_denom) {
     int improper = m_num / m_denom;
     m_whole += improper;
     m_num -= improper * m_denom;
     int gcd = std::gcd(m_num, m_denom);
     m_num /= gcd;
     m_denom /= gcd;
-    setValue();
+  }
+  setValue();
 }
 
 bool TTokenFraction::toFractionParts(int *pnum, int *pdenom)
@@ -54,7 +56,8 @@ std::string TTokenBinaryOp::toString() {
         m_action == BINARY_OP_ACTION_MULT ? " x " :
         m_action == BINARY_OP_ACTION_MULTNEG ? " -x " :
         m_action == BINARY_OP_ACTION_SUB ? " - " :
-        m_action == BINARY_OP_ACTION_DIV ? " ÷ " :
+        // m_action == BINARY_OP_ACTION_DIV ? " ÷ " :
+        m_action == BINARY_OP_ACTION_DIV ? " / " :
         "?");
     if (m_asPercent) {
         str += "%";
