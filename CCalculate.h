@@ -53,6 +53,8 @@ typedef struct {
  */
 class CCalculate {
 private:
+    /** Keys entered, used for backspace. */
+    std::vector<char> m_char;
     /** Parsed tokens in the order entered by the user. */
     std::vector<TScan*> m_scan;
     /** Tokens parsed into RPN representation. */
@@ -73,9 +75,16 @@ private:
       m_lastError = error;
     }
 
+    /**
+     * Scan the character without adding to m_char array, returning a value
+     * indicating whether the character was scanned.
+     */
+    bool scanSilent(const char ch);
+
 public:
     CCalculate() { }
     ~CCalculate() {
+      reset();
       reset_scan();
       reset_pvoEquation();
       reset_result();
@@ -83,6 +92,8 @@ public:
 
     /** Reset the equation - this is te AC (clear all) action. */
     void reset();
+    /** Reset the `m_char` vector. */
+    void reset_char();
     /** Reset the `m_scan` vector. */
     void reset_scan();
     /** Reset the `m_pvoEquation` vector. */
@@ -95,6 +106,9 @@ public:
      * @param ch The character or keypress to add to the current equation.
     */
     void scan(const char ch);
+
+    /** Remove the most recent character. */
+    void backspace();
 
     /** Parse the tokens into the RPN stack. */
     void parseEquation();

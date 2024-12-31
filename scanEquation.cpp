@@ -2,16 +2,18 @@
 #include "CCalculate.h"
 
 void CCalculate::scan(const char ch) {
+    if (scanSilent(ch)) {
+        m_char.push_back(ch);
+    };
+}
+
+bool CCalculate::scanSilent(const char ch) {
     TScan* last = m_scan.size() <= 0 
         ? nullptr 
         : m_scan.back();
     eScanType type = last ? last->type() : SCAN_UNDEFINED;
 
     switch (ch) {
-        case ' ':
-            // Ignore whitespace.
-            break;
-
         case '0':
         case '1':
         case '2':
@@ -53,6 +55,19 @@ void CCalculate::scan(const char ch) {
         case ')':
             m_scan.push_back(new TScanClose());
             break;
-    }    
+        default:
+            // All other characters not scanned.
+            return false;
+    }
+    return true;
 }
 
+void CCalculate::backspace() {
+    if (m_char.size() > 0) {
+        m_char.pop_back();
+        reset_scan();
+        for (char ch : m_char) {
+            scanSilent(ch);
+        }
+    }
+}

@@ -28,6 +28,12 @@ creates a minimal Ubuntu container that can be used to build the project.
    # g++ *.cpp
    ```
 
+   If you're using the _curses_ library for display, link it with
+
+   ```
+   # g++ *.cpp -lncurses
+   ```
+
 4. Run the built application
 
    ```
