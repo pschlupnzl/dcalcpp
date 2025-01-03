@@ -6,9 +6,12 @@
 #include <cstring>
 #include "CCalculate.h"
 #include "TToken.h"
+#include "types.h"
 
 #include <ncurses.h>
 #include "LcdToken.h"
+
+#include "tests/runTests.h"
 
 /*
 * To build and run the Docker container, which has Ubuntu and full g++ compiler:
@@ -93,7 +96,10 @@ void redraw() {
 #define CHAR_DELETE 0x7F
 #define CHAR_ESCAPE 0x1B
 
+const char* const WELCOME_MESSAGE = "DysCalculator - Press 'q' to exit.";
+
 void interactive() {
+    snprintf(message, MESSAGE_LENGTH, "%s", WELCOME_MESSAGE);
     initscr();
     noecho();
 
@@ -103,8 +109,12 @@ void interactive() {
         redraw();
 
         int ch = getch();
+
+        // Map keyboard.
+        if (ch == '`') ch = CHAR_PLUSMINUS;
+
         // printw("%s", (char*)&ch);
-        snprintf(message, MESSAGE_LENGTH, "Key %d", ch);
+        snprintf(message, MESSAGE_LENGTH, "%s Key=%d", WELCOME_MESSAGE, ch);
         if (ch == 'q') {
             break;
         } else if (ch == CHAR_ESCAPE) {
@@ -118,29 +128,60 @@ void interactive() {
     endwin();
 }
 
+// int main () {
+//     runTests();
+// }
+
 int main(int argc, char **argv) {
-    snprintf(message, MESSAGE_LENGTH, "%s", "DysCalculator - Press 'q' to exit.");
+    const char* input = nullptr;
 
-    const char* input = argc > 1 
-        ? argv[1] :
-        // "";
-        // "(1+2)*3";
-        "1+2*3";
-        // "11";
-        // "11+22*33";
-        // "1_2_4 + 2_5_124";
-        // "1_2+2_3";
-
-    calc.reset();
-    for (const char* pch = input; *pch; ++pch) {
-        calc.scan(*pch);
+    bool isTests = false;
+    bool isInteractive = false;
+    for (int argn=1; argn < argc; argn++) {
+        if (strcmp(argv[argn], "-i") == 0) {
+            isInteractive = true;
+        } else if (strcmp(argv[argn], "-t") == 0) {
+            isTests = true;
+        } else {
+            input = argv[argn];
+        }
     }
 
-    interactive();
+    if (isTests) {
+        runTests();
+    }
+
+    calc.reset();
+    if (input != nullptr) {
+        for (const char* pch = input; *pch; ++pch) {
+            calc.scan(*pch);
+        }
+    }
+
+    if (isInteractive) {
+        interactive();
+    } else if (input == nullptr) {
+        input =
+            // "(1+2)*3";
+            "1+2*3";
+            // "11";
+            // "11+22*33";
+            // "1_2_4 + 2_5_124";
+            // "1_2+2_3";
+            // "1+2*34567.34";
+        calc.reset();
+        for (const char* pch = input; *pch; ++pch) {
+            calc.scan(*pch);
+        }
+    }
 
     calc.parseEquation();
     calc.evalEquation(options);
     std::cout << calc.toString() << std::endl;
+
+
+    // std::cout << "C++ version: " << __cplusplus << std::endl;
+    return 0;
 }
 
 #endif /* ARDUINO_BUILD */

@@ -1,0 +1,3 @@
+
+/** Main runner. */
+void runTests();

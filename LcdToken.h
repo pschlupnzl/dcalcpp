@@ -61,9 +61,13 @@ private:
   }
 
   /** Render fraction with whole and fractional parts. */
-  int16_t addFraction(int whole, int num, int denom, int16_t cx, int16_t cy) {
+  int16_t addFraction(int whole, int num, int denom, bool negative, int16_t cx, int16_t cy) {
     uint16_t tw = 0;
-    uint16_t tww = whole ? addString(numberToString(whole), cx, cy, 0) : 0;
+    uint16_t tww = whole
+    ? addString(numberToString(negative ? -whole : whole), cx, cy, 0)
+    : negative
+    ? addString("-", cx, cy, 0) 
+    : 0;
     tww += m_hpad;
 
     if (num) {
@@ -114,12 +118,13 @@ public:
 
   void getBounds(TScan* scan, int16_t cx, int16_t cy, int16_t* out_tw) {
     int whole, num, denom;
+    bool negative;
     m_rects.clear();
     if (
       scan->type() == SCAN_NUMBER 
-      && ((TScanNumber*)scan)->toFractionParts(&whole, &num, &denom)
+      && ((TScanNumber*)scan)->toFractionParts(&whole, &num, &denom, &negative)
     ) {
-      *out_tw = addFraction(whole, num, denom, cx, cy);
+      *out_tw = addFraction(whole, num, denom, negative, cx, cy);
     } else {
       *out_tw = addString(scan->toString(), cx, cy, 0);
     }
@@ -127,12 +132,13 @@ public:
 
   void getBounds(TToken* token, int16_t cx, int16_t cy) {
     int whole, num, denom;
+    bool negative;
     m_rects.clear();
     if (
       token->type() == TOKEN_FRACTION &&
-      ((TTokenFraction*)token)->toFractionParts(&whole, &num, &denom)
+      ((TTokenFraction*)token)->toFractionParts(&whole, &num, &denom, &negative)
     ) {
-      addFraction(whole, num, denom, cy, cy);
+      addFraction(whole, num, denom, negative, cy, cy);
     } else {
       addString(token->toString(), cx, cy);
     }

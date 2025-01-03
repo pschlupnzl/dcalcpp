@@ -88,19 +88,24 @@ private:
     int m_whole;
     int m_num;
     int m_denom;
+    int m_negative;
 
     /** Update the `m_value` of the result base class. */
     void setValue() {
         double denom = m_denom == 0 ? 1.00 : (double)m_denom;
         m_value = ((double)m_whole) + ((double)m_num) / denom;
+        if (m_negative) {
+            m_value = -m_value;
+        }
     }
 public:
     TTokenFraction() : TTokenResultBase(TOKEN_FRACTION) { };
-    TTokenFraction(int whole, int num, int denom)
+    TTokenFraction(int whole, int num, int denom, bool negative)
     : TTokenResultBase(TOKEN_FRACTION) {
         m_whole = whole;
         m_num = num;
         m_denom = denom;
+        m_negative = negative;
         setValue();
     }
     ~TTokenFraction() { }
@@ -110,7 +115,7 @@ public:
      */
     bool toFractionParts(int* pnum, int* pdenom);
     /** Returns the fraction parts as proper fraction with whole number. */
-    bool toFractionParts(int* pwhole, int* pnum, int* pdenom);
+    bool toFractionParts(int* pwhole, int* pnum, int* pdenom, bool* pneg);
     /** Simplifies the fraction. */
     void simplify();
     std::string toString();

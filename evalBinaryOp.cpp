@@ -87,7 +87,12 @@ TToken* TTokenBinaryOp::evaluate(TToken* pArg1, TToken* pArg2) {
     }
 
     if (asFraction) {
-        return new TTokenFraction(0, iNum, iDenom);
+        bool negative = false;
+        if (iNum < 0) {
+            negative = true;
+            iNum = -iNum;
+        }
+        return new TTokenFraction(0, iNum, iDenom, negative);
     }
     return new TTokenValue(dVal);
 }

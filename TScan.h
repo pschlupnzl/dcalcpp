@@ -24,12 +24,17 @@ public:
 /** A scanned type number. */
 class TScanNumber : public TScan {
 private:
+    /** Characters representing string being entered. */
     std::string m_tok;
+    /** Value indicating whether value is negative. */
+    bool m_negative;
+    /** Value indicating whether string has a decimal point. */
     bool m_hasDecimal;
     /** Number of fraction parts, i.e. count of '_' characters in m_tok. */
     int m_fractionParts;
 public:
     TScanNumber() : TScan(SCAN_NUMBER) {
+        m_negative = false;
         m_hasDecimal = false;
         m_fractionParts = 0;
     };
@@ -40,7 +45,7 @@ public:
      * Parse the token string into fraction parts, returning a value indicating
      * whether the fraction was parsed.
      */
-    bool toFractionParts(int* pwhole, int* pnum, int* pdenom);
+    bool toFractionParts(int* pwhole, int* pnum, int* pdenom, bool* pneg);
     /**
      * Instantiates a new TTokenValue or TTokenFracton that represents the 
      * current string value.
