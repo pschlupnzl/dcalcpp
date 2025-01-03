@@ -3,7 +3,7 @@
 #include <tuple>
 #include "../CCalculate.h"
 #include "../TToken.h"
-#include "../types.h"
+#include "../eAction.h"
 
 #define evalCase_t std::tuple<const char*, const char*, const char*>
 
@@ -81,7 +81,7 @@ void runTests() {
             pos = next + 1;
 
             const char ch =
-                cmd == "±" ? CHAR_PLUSMINUS
+                cmd == "±" ? eAction::ACTION_NEGATE
                     : cmd.c_str()[0];
             testCalc.scan(ch);
         }

@@ -1,5 +1,5 @@
 #include "TScan.h"
-#include "types.h"
+#include "eAction.h"
 
 bool TScanNumber::toFractionParts(int *pwhole, int *pnum, int *pdenom, bool *pneg)
 {
@@ -25,7 +25,7 @@ bool TScanNumber::toFractionParts(int *pwhole, int *pnum, int *pdenom, bool *pne
       // |         1_2 |               1 |
       // |        1_2_ |               2 |
       // |       1_2_3 |               3 |
-        size_t index = copy.find(CHAR_FRACTION);
+        size_t index = copy.find(eAction::ACTION_FRACTION);
         parts[k] = std::stoi(copy.substr(0, index));
         rem -= index + 1;
         copy.erase(0, index + 1);
@@ -51,7 +51,7 @@ bool TScanNumber::toFractionParts(int *pwhole, int *pnum, int *pdenom, bool *pne
 void TScanNumber::append(const char ch)
 {
     switch (ch) {
-        case CHAR_DECIMAL:
+        case eAction::ACTION_DECIMAL:
             if (m_fractionParts == 0 && !m_hasDecimal) {
                 if (m_tok.length() <= 0) {
                     m_tok += "0";
@@ -60,13 +60,13 @@ void TScanNumber::append(const char ch)
                 m_hasDecimal = true;
             }
             break;
-        case CHAR_FRACTION:
+        case eAction::ACTION_FRACTION:
             if (m_fractionParts < 2 && !m_hasDecimal) {
                 m_tok += ch;
                 m_fractionParts += 1;
             }
             break;
-        case CHAR_PLUSMINUS:
+        case eAction::ACTION_NEGATE:
             m_negative = !m_negative;
             break;
         case '0':
@@ -82,20 +82,6 @@ void TScanNumber::append(const char ch)
             m_tok += ch;
             break;
     }
-    // if (ch == CHAR_DECIMAL && m_fractionParts == 0 && !m_hasDecimal) {
-    //     if (m_tok.length() <= 0) {
-    //         m_tok += "0";
-    //     }
-    //     m_tok += ch;
-    //     m_hasDecimal = true;
-    // } else if (ch == CHAR_FRACTION && m_fractionParts < 2 && !m_hasDecimal) {
-    //     m_tok += ch;
-    //     m_fractionParts += 1;
-    // } else if (ch == CHAR_PLUSMINUS) {
-    //     m_negative = !m_negative;
-    // } else if ('0' <= ch && ch <= '9') {
-    //     m_tok += ch;
-    // }
 }
 
 TToken *TScanNumber::toToken()
@@ -111,21 +97,6 @@ TToken *TScanNumber::toToken()
         val = -val;
     }
     return new TTokenValue(val);
-
-    // std::string copy = std::string(m_tok);
-    // size_t index = copy.find(CHAR_FRACTION);
-    // int v0 = std::stoi(copy.substr(0, index));
-    // copy.erase(0, index + 1);
-    // if (m_fractionParts == 1) {
-    //     return new TTokenFraction(0, v0, std::stoi(copy));
-    // }
-
-    // index = copy.find(CHAR_FRACTION);
-    // int v1 = std::stoi(copy.substr(0, index));
-    // copy.erase(0, index + 1);
-    // int v2 = std::stoi(copy);
-
-    // return new TTokenFraction(v0, v1, v2);
 }
 
 std::string TScanNumber::toString()

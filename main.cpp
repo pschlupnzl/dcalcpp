@@ -6,6 +6,7 @@
 #include <cstring>
 #include "CCalculate.h"
 #include "TToken.h"
+#include "eAction.h"
 #include "types.h"
 
 #include <ncurses.h>
@@ -111,7 +112,7 @@ void interactive() {
         int ch = getch();
 
         // Map keyboard.
-        if (ch == '`') ch = CHAR_PLUSMINUS;
+        if (ch == '`') ch = eAction::ACTION_NEGATE;
 
         // printw("%s", (char*)&ch);
         snprintf(message, MESSAGE_LENGTH, "%s Key=%d", WELCOME_MESSAGE, ch);

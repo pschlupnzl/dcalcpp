@@ -1,6 +1,6 @@
 #include "eScanType.h"
 #include "CCalculate.h"
-#include "types.h"
+#include "eAction.h"
 
 void CCalculate::scan(const char ch) {
     if (scanSilent(ch)) {
@@ -25,15 +25,15 @@ bool CCalculate::scanSilent(const char ch) {
         case '7':
         case '8':
         case '9':
-        case CHAR_DECIMAL:
-        case CHAR_FRACTION:
-        case CHAR_PLUSMINUS:
+        case eAction::ACTION_DECIMAL:
+        case eAction::ACTION_FRACTION:
+        case eAction::ACTION_NEGATE:
             if (!last || type != SCAN_NUMBER) {
                 last = new TScanNumber();
                 m_scan.push_back(last);
             }
             ((TScanNumber*) last)->append(ch);
-            
+
             break;
 
         case '+':

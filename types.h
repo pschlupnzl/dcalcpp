@@ -13,9 +13,4 @@ typedef unsigned short int uint16_t;
 // #define uint16_t unsigned short int
 #endif /* uint16_t */
 
-// Character keys defining keyboard layout.
-#define CHAR_DECIMAL '.'
-#define CHAR_FRACTION '_'
-#define CHAR_PLUSMINUS '~'
-
 #endif /* TYPES_H */
