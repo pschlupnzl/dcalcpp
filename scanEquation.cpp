@@ -2,29 +2,29 @@
 #include "CCalculate.h"
 #include "eAction.h"
 
-void CCalculate::scan(const char ch) {
-    if (scanSilent(ch)) {
-        m_char.push_back(ch);
+void CCalculate::scan(eAction action) {
+    if (scanSilent(action)) {
+        m_actions.push_back(action);
     };
 }
 
-bool CCalculate::scanSilent(const char ch) {
+bool CCalculate::scanSilent(eAction action) {
     TScan* last = m_scan.size() <= 0 
         ? nullptr 
         : m_scan.back();
     eScanType type = last ? last->type() : SCAN_UNDEFINED;
 
-    switch (ch) {
-        case '0':
-        case '1':
-        case '2':
-        case '3':
-        case '4':
-        case '5':
-        case '6':
-        case '7':
-        case '8':
-        case '9':
+    switch (action) {
+        case eAction::ACTION_NUM0:
+        case eAction::ACTION_NUM1:
+        case eAction::ACTION_NUM2:
+        case eAction::ACTION_NUM3:
+        case eAction::ACTION_NUM4:
+        case eAction::ACTION_NUM5:
+        case eAction::ACTION_NUM6:
+        case eAction::ACTION_NUM7:
+        case eAction::ACTION_NUM8:
+        case eAction::ACTION_NUM9:
         case eAction::ACTION_DECIMAL:
         case eAction::ACTION_FRACTION:
         case eAction::ACTION_NEGATE:
@@ -32,30 +32,30 @@ bool CCalculate::scanSilent(const char ch) {
                 last = new TScanNumber();
                 m_scan.push_back(last);
             }
-            ((TScanNumber*) last)->append(ch);
+            ((TScanNumber*) last)->append(action);
 
             break;
 
-        case '+':
-        case '*':
-        case '-':
-        case '/':
+        case eAction::ACTION_ADD:
+        case eAction::ACTION_MULT:
+        case eAction::ACTION_SUB:
+        case eAction::ACTION_DIV:
             if (type == SCAN_NUMBER || type == SCAN_CLOSE) {
                 m_scan.push_back(new TScanBinaryOp(
-                    ch == '+' ? BINARY_OP_ACTION_ADD :
-                    ch == '*' ? BINARY_OP_ACTION_MULT :
-                    ch == '-' ? BINARY_OP_ACTION_SUB :
-                    ch == '/' ? BINARY_OP_ACTION_DIV :
+                    action == eAction::ACTION_ADD ? BINARY_OP_ACTION_ADD :
+                    action == eAction::ACTION_MULT ? BINARY_OP_ACTION_MULT :
+                    action == eAction::ACTION_SUB ? BINARY_OP_ACTION_SUB :
+                    action == eAction::ACTION_DIV ? BINARY_OP_ACTION_DIV :
                     BINARY_OP_ACTION_ADD
                 ));
             }
             break;
 
-        case '(':
+        case eAction::ACTION_OPEN:
             m_scan.push_back(new TScanOpen());
             break;
 
-        case ')':
+        case eAction::ACTION_CLOSE:
             m_scan.push_back(new TScanClose());
             break;
         default:
@@ -66,11 +66,11 @@ bool CCalculate::scanSilent(const char ch) {
 }
 
 void CCalculate::backspace() {
-    if (m_char.size() > 0) {
-        m_char.pop_back();
+    if (m_actions.size() > 0) {
+        m_actions.pop_back();
         reset_scan();
-        for (char ch : m_char) {
-            scanSilent(ch);
+        for (eAction action : m_actions) {
+            scanSilent(action);
         }
     }
 }

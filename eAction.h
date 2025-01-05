@@ -2,37 +2,38 @@
 #define EACTION_H
 
 /** Actions and operations of tokens. */
-enum eAction : char
-{
-    ACTION_NUM0 = '0',
-    ACTION_NUM1 = '1',
-    ACTION_NUM2 = '2',
-    ACTION_NUM3 = '3',
-    ACTION_NUM4 = '4',
-    ACTION_NUM5 = '5',
-    ACTION_NUM6 = '6',
-    ACTION_NUM7 = '7',
-    ACTION_NUM8 = '8',
-    ACTION_NUM9 = '9',
-    ACTION_DECIMAL = '.',
-    ACTION_NEGATE = '~',
+enum eAction {
+    ACTION_UNDEFINED,
+
+    ACTION_NUM0,
+    ACTION_NUM1,
+    ACTION_NUM2,
+    ACTION_NUM3,
+    ACTION_NUM4,
+    ACTION_NUM5,
+    ACTION_NUM6,
+    ACTION_NUM7,
+    ACTION_NUM8,
+    ACTION_NUM9,
+    ACTION_DECIMAL,
+    ACTION_NEGATE,
     // // Constants.
     // ACTION_M_E,
     // ACTION_M_PI,
     // Basic binary operators.
-    ACTION_MULT = '*',
-    ACTION_MULTNEG = '#', // Multiply by negative number: -4/-2 ==> -1*4 / -1*2 but -2^2  -->  -(2^2)
-    ACTION_DIV = '/',
-    ACTION_ADD = '+',
-    ACTION_SUB = '-',
+    ACTION_MULT,
+    ACTION_MULTNEG, // Multiply by negative number: -4/-2 ==> -1*4 / -1*2 but -2^2  -->  -(2^2)
+    ACTION_DIV,
+    ACTION_ADD,
+    ACTION_SUB,
     // Brackets.
-    ACTION_OPEN = '(',
-    ACTION_CLOSE = ')',
+    ACTION_OPEN,
+    ACTION_CLOSE,
     // ACTION_CLOSE_AUTO,
     // // Powers.
     // ACTION_SQRT,
     // ACTION_POW2,
-    ACTION_POW = '^',
+    ACTION_POW,
     // // Trigonometry.
     // ACTION_SIN,
     // ACTION_COS,

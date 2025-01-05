@@ -13,4 +13,9 @@ typedef unsigned short int uint16_t;
 // #define uint16_t unsigned short int
 #endif /* uint16_t */
 
+#ifndef ABS
+// Absolute value as ternary rather than math operator.
+#define ABS(x) ((x) < 0 ? (-(x)) : (x))
+#endif /* ABS */
+
 #endif /* TYPES_H */

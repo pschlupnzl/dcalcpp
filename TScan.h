@@ -40,7 +40,7 @@ public:
     };
     ~TScanNumber() { }
     /** Append a character, including `.` decimal and `_` fraction. */
-    void append(const char ch);
+    void append(eAction action);
     /**
      * Parse the token string into fraction parts, returning a value indicating
      * whether the fraction was parsed.

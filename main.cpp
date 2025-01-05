@@ -6,6 +6,7 @@
 #include <cstring>
 #include "CCalculate.h"
 #include "TToken.h"
+#include "keymap.h"
 #include "eAction.h"
 #include "types.h"
 
@@ -111,9 +112,6 @@ void interactive() {
 
         int ch = getch();
 
-        // Map keyboard.
-        if (ch == '`') ch = eAction::ACTION_NEGATE;
-
         // printw("%s", (char*)&ch);
         snprintf(message, MESSAGE_LENGTH, "%s Key=%d", WELCOME_MESSAGE, ch);
         if (ch == 'q') {
@@ -123,7 +121,7 @@ void interactive() {
         } else if (ch == CHAR_BACKSPACE || ch == CHAR_DELETE) {
             calc.backspace();
         } else {
-            calc.scan(ch);
+            calc.scan(actionFromKeyboard(ch));
         }
     }
     endwin();
@@ -155,7 +153,7 @@ int main(int argc, char **argv) {
     calc.reset();
     if (input != nullptr) {
         for (const char* pch = input; *pch; ++pch) {
-            calc.scan(*pch);
+            calc.scan(actionFromKeyboard(*pch));
         }
     }
 
@@ -172,7 +170,7 @@ int main(int argc, char **argv) {
             // "1+2*34567.34";
         calc.reset();
         for (const char* pch = input; *pch; ++pch) {
-            calc.scan(*pch);
+            calc.scan(actionFromKeyboard(*pch));
         }
     }
 

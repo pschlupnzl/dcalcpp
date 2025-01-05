@@ -25,7 +25,7 @@ bool TScanNumber::toFractionParts(int *pwhole, int *pnum, int *pdenom, bool *pne
       // |         1_2 |               1 |
       // |        1_2_ |               2 |
       // |       1_2_3 |               3 |
-        size_t index = copy.find(eAction::ACTION_FRACTION);
+        size_t index = copy.find('_');
         parts[k] = std::stoi(copy.substr(0, index));
         rem -= index + 1;
         copy.erase(0, index + 1);
@@ -48,39 +48,37 @@ bool TScanNumber::toFractionParts(int *pwhole, int *pnum, int *pdenom, bool *pne
     return true;
 }
 
-void TScanNumber::append(const char ch)
+void TScanNumber::append(eAction action)
 {
-    switch (ch) {
+    switch (action) {
         case eAction::ACTION_DECIMAL:
             if (m_fractionParts == 0 && !m_hasDecimal) {
                 if (m_tok.length() <= 0) {
                     m_tok += "0";
                 }
-                m_tok += ch;
+                m_tok += ".";
                 m_hasDecimal = true;
             }
             break;
         case eAction::ACTION_FRACTION:
             if (m_fractionParts < 2 && !m_hasDecimal) {
-                m_tok += ch;
+                m_tok += "_";
                 m_fractionParts += 1;
             }
             break;
         case eAction::ACTION_NEGATE:
             m_negative = !m_negative;
             break;
-        case '0':
-        case '1':
-        case '2':
-        case '3':
-        case '4':
-        case '5':
-        case '6':
-        case '7':
-        case '8':
-        case '9':
-            m_tok += ch;
-            break;
+        case eAction::ACTION_NUM0: m_tok += "0"; break;
+        case eAction::ACTION_NUM1: m_tok += "1"; break;
+        case eAction::ACTION_NUM2: m_tok += "2"; break;
+        case eAction::ACTION_NUM3: m_tok += "3"; break;
+        case eAction::ACTION_NUM4: m_tok += "4"; break;
+        case eAction::ACTION_NUM5: m_tok += "5"; break;
+        case eAction::ACTION_NUM6: m_tok += "6"; break;
+        case eAction::ACTION_NUM7: m_tok += "7"; break;
+        case eAction::ACTION_NUM8: m_tok += "8"; break;
+        case eAction::ACTION_NUM9: m_tok += "9"; break;
     }
 }
 

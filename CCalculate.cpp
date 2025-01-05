@@ -4,15 +4,15 @@
 #include "TScan.h"
 
 void CCalculate::reset() {
-    reset_char();
+    reset_actions();
     reset_scan();
     reset_pvoEquation();
     reset_result();
 }
 
-void CCalculate::reset_char() {
-    while (m_char.size() > 0) {
-        m_char.pop_back();
+void CCalculate::reset_actions() {
+    while (m_actions.size() > 0) {
+        m_actions.pop_back();
     }
 }
 

@@ -57,11 +57,12 @@ void TTokenFraction::simplify() {
   setValue();
 }
 
-bool TTokenFraction::toFractionParts(int *pnum, int *pdenom)
+bool TTokenFraction::toSignedFraction(int *pnum, int *pdenom, bool *pneg)
 {
     int num = m_whole * m_denom + m_num;
     *pnum = m_negative ? -num : num;
     *pdenom = m_denom;
+    *pneg = m_negative;
     return true;
 }
 
@@ -77,9 +78,9 @@ std::string TTokenFraction::toString()
 {
     char buffer[TTOKENVALUE_BUFFER_SIZE];
     if (m_whole) {
-        snprintf(buffer, TTOKENVALUE_BUFFER_SIZE, "%s%i~%i/%i", m_negative ? "-" : "", m_whole, m_num, m_denom);
+        snprintf(buffer, TTOKENVALUE_BUFFER_SIZE, "%s%i_%i_%i", m_negative ? "-" : "", m_whole, m_num, m_denom);
     } else {
-        snprintf(buffer, TTOKENVALUE_BUFFER_SIZE, "%s %i/%i", m_negative ? "-" : "", m_num, m_denom);
+        snprintf(buffer, TTOKENVALUE_BUFFER_SIZE, "%s%i_%i", m_negative ? "-" : "", m_num, m_denom);
     }
     return std::string(buffer);
 }

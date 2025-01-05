@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include "eErrors.h"
+#include "eAction.h"
 #include "TScan.h"
 #include "TToken.h"
 
@@ -54,7 +55,7 @@ typedef struct {
 class CCalculate {
 private:
     /** Keys entered, used for backspace. */
-    std::vector<char> m_char;
+    std::vector<eAction> m_actions;
     /** Parsed tokens in the order entered by the user. */
     std::vector<TScan*> m_scan;
     /** Tokens parsed into RPN representation. */
@@ -76,24 +77,21 @@ private:
     }
 
     /**
-     * Scan the character without adding to m_char array, returning a value
-     * indicating whether the character was scanned.
+     * Scan the action without adding to m_actions array, returning a value
+     * indicating whether the action was scanned.
      */
-    bool scanSilent(const char ch);
+    bool scanSilent(eAction action);
 
 public:
     CCalculate() { }
     ~CCalculate() {
       reset();
-      reset_scan();
-      reset_pvoEquation();
-      reset_result();
     }
 
     /** Reset the equation - this is te AC (clear all) action. */
     void reset();
-    /** Reset the `m_char` vector. */
-    void reset_char();
+    /** Reset the `m_actions` vector. */
+    void reset_actions();
     /** Reset the `m_scan` vector. */
     void reset_scan();
     /** Reset the `m_pvoEquation` vector. */
@@ -103,9 +101,9 @@ public:
 
     /**
      * Scan the character and add to the current equation.
-     * @param ch The character or keypress to add to the current equation.
+     * @param action The keypress action to add to the current equation.
     */
-    void scan(const char ch);
+    void scan(eAction action);
 
     /** Remove the most recent character. */
     void backspace();

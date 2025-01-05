@@ -110,10 +110,12 @@ public:
     }
     ~TTokenFraction() { }
     /**
-     * Fills the numerator and denominator references with the values of this
-     * token represented as an imporper fraction, i.e. without whole number.
+     * Returns a value or fraction token, where possible, promoted to a fraction
+     * with **signed improper** fraction parts, i.e. whole number is zero,
+     * numerator is signed, denominator is positive, and the negative flag is
+     * set. 
      */
-    bool toFractionParts(int* pnum, int* pdenom);
+    bool toSignedFraction(int* pnum, int* pdenom, bool* pneg);
     /** Returns the fraction parts as proper fraction with whole number. */
     bool toFractionParts(int* pwhole, int* pnum, int* pdenom, bool* pneg);
     /** Simplifies the fraction. */
