@@ -22,13 +22,13 @@ void CCalculate::evalEquation(IEvalEquationOptions &options) {
     for (size_t iThisPt = 0; iThisPt < n; iThisPt++) {
         TToken* pvoThisValop = m_pvoEquation[iThisPt];
         switch (pvoThisValop->type()) {
-            case TOKEN_VALUE:
-            case TOKEN_FRACTION:
+            case eTokenType::TOKEN_VALUE:
+            case eTokenType::TOKEN_FRACTION:
                 dsVals.push_back(pvoThisValop);
                 break;
 
 
-            case TOKEN_BINARYOP:
+            case eTokenType::TOKEN_BINARYOP:
                 if (dsVals.size() < 2) {
                     return errorEvaluating(EVAL_BINARY_STACK_UNDERFLOW);
                 }
@@ -39,6 +39,17 @@ void CCalculate::evalEquation(IEvalEquationOptions &options) {
 
                 dsVals.push_back(((TTokenBinaryOp*)pvoThisValop)->evaluate(
                     pArg1, pArg2
+                ));
+                break;
+
+            case eTokenType::TOKEN_POSTUNARYOP:
+                if (dsVals.size() < 1) {
+                    return errorEvaluating(EVAL_POST_UNARY_STACK_UNDERFLOW);
+                }
+                pArg1 = dsVals.back();
+                dsVals.pop_back();
+                dsVals.push_back(((TTokenPostUnaryOp*)pvoThisValop)->evaluate(
+                    pArg1
                 ));
                 break;
 

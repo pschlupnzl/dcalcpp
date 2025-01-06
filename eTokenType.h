@@ -25,8 +25,8 @@ enum eTokenType {
   // TOKEN_BINARYPOW,
   // /** Unary operator or function, e.g. "sin". */
   // TOKEN_UNARYOP,
-  // /** Unary operator after the argument, e.g. "!". */
-  // TOKEN_POSTUNARYOP,
+  /** Unary operator after the argument, e.g. "!". */
+  TOKEN_POSTUNARYOP,
   // /** Open bracket, "(". */
   // TOKEN_OPEN,
   // /** Close bracket, ")". */

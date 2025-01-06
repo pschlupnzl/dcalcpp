@@ -13,6 +13,8 @@ enum eErrors {
 
     /** A binary operator does not have two operands to work on. */
     EVAL_BINARY_STACK_UNDERFLOW,
+    /** A post unary operator does not have two operands to work on. */
+    EVAL_POST_UNARY_STACK_UNDERFLOW,
     /**
      * A binary operator could not be executed because the arguments didn't
      * match (this shouldn't happen). 

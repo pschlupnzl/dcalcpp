@@ -31,8 +31,8 @@ enum eAction {
     ACTION_CLOSE,
     // ACTION_CLOSE_AUTO,
     // // Powers.
-    // ACTION_SQRT,
-    // ACTION_POW2,
+    ACTION_SQRT,
+    ACTION_POW2,
     ACTION_POW,
     // // Trigonometry.
     // ACTION_SIN,
@@ -89,14 +89,25 @@ enum eBinaryOpAction
     /** Binar */
     BINARY_OP_ACTION_PARSE_COMPLETE = -1,
 
-    BINARY_OP_ACTION_MULT = ACTION_MULT,
-    BINARY_OP_ACTION_MULTNEG = ACTION_MULTNEG,
-    BINARY_OP_ACTION_DIV = ACTION_DIV,
-    BINARY_OP_ACTION_ADD = ACTION_ADD,
-    BINARY_OP_ACTION_SUB = ACTION_SUB,
+    BINARY_OP_ACTION = 100,
+    BINARY_OP_MULT,
+    BINARY_OP_MULTNEG,
+    BINARY_OP_DIV,
+    BINARY_OP_ADD,
+    BINARY_OP_SUB,
 
-    BINARY_OP_ACTION_ROOT = ACTION_ROOT,
-    BINARY_OP_ACTION_POW = ACTION_POW
+    BINARY_OP_ROOT,
+    BINARY_OP_POW,
+};
+
+enum ePostUnaryOpAction {
+    POST_UNARY_OP_ACTION = 200,
+    POST_UNARY_OP_POW2,
+};
+
+enum eUnaryOpAction {
+    UNARY_OP_ACTION = 300,
+    UNARY_OP_SQRT,
 };
 
 #endif /* EACTION_H */

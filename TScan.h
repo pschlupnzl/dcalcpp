@@ -33,7 +33,7 @@ private:
     /** Number of fraction parts, i.e. count of '_' characters in m_tok. */
     int m_fractionParts;
 public:
-    TScanNumber() : TScan(SCAN_NUMBER) {
+    TScanNumber() : TScan(eScanType::SCAN_NUMBER) {
         m_negative = false;
         m_hasDecimal = false;
         m_fractionParts = 0;
@@ -58,7 +58,7 @@ class TScanBinaryOp : public TScan {
 private:
     eBinaryOpAction m_action;
 public:
-    TScanBinaryOp(eBinaryOpAction action) : TScan(SCAN_BINARYOP) {
+    TScanBinaryOp(eBinaryOpAction action) : TScan(eScanType::SCAN_BINARYOP) {
         m_action = action;
     }
     ~TScanBinaryOp() { }
@@ -71,25 +71,43 @@ public:
     }
     std::string toString() {
         return std::string(
-          m_action == BINARY_OP_ACTION_ADD ? " + " :
-          m_action == BINARY_OP_ACTION_MULT ? " x " :
-          m_action == BINARY_OP_ACTION_SUB ? " - " :
-        //   m_action == BINARY_OP_ACTION_DIV ? " ÷ " :
-          m_action == BINARY_OP_ACTION_DIV ? " / " :
+          m_action == eBinaryOpAction::BINARY_OP_ADD ? " + " :
+          m_action == eBinaryOpAction::BINARY_OP_MULT ? " x " :
+          m_action == eBinaryOpAction::BINARY_OP_SUB ? " - " :
+        //   m_action == eBinaryOpAction::BINARY_OP_DIV ? " ÷ " :
+          m_action == eBinaryOpAction::BINARY_OP_DIV ? " / " :
           "?");
+    }
+};
+
+class TScanPostUnaryOp : public TScan {
+private:
+    ePostUnaryOpAction m_action;
+public:
+    TScanPostUnaryOp(ePostUnaryOpAction action)
+        : TScan(eScanType::SCAN_POSTUNARYOP) {
+        m_action = action;
+    };
+    TTokenPostUnaryOp* toToken() {
+        return new TTokenPostUnaryOp(m_action);
+    }
+    std::string toString() {
+        return std::string(
+            m_action == ePostUnaryOpAction::POST_UNARY_OP_POW2 ? "^2" :
+            "?");
     }
 };
 
 class TScanOpen : public TScan {
 public:
-    TScanOpen() : TScan(SCAN_OPEN) { };
+    TScanOpen() : TScan(eScanType::SCAN_OPEN) { };
     ~TScanOpen() { }
     std::string toString() { return "("; }
 };
 
 class TScanClose : public TScan {
 public:
-    TScanClose() : TScan(SCAN_CLOSE) { };
+    TScanClose() : TScan(eScanType::SCAN_CLOSE) { };
     ~TScanClose() { }
     std::string toString() { return ")"; }
 };

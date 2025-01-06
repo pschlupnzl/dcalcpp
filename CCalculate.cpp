@@ -29,14 +29,17 @@ void CCalculate::reset_pvoEquation() {
         TToken* token = m_pvoEquation.back();
         m_pvoEquation.pop_back();
         switch (token->type()) {
-            case TOKEN_BINARYOP:
-                delete (TTokenBinaryOp*) token;
+            case eTokenType::TOKEN_VALUE:
+                delete (TTokenValue*) token;
                 break;
-            case TOKEN_FRACTION:
+            case eTokenType::TOKEN_FRACTION:
                 delete (TTokenFraction*) token;
                 break;
-            case TOKEN_VALUE:
-                delete (TTokenValue*) token;
+            case eTokenType::TOKEN_BINARYOP:
+                delete (TTokenBinaryOp*) token;
+                break;
+            case eTokenType::TOKEN_POSTUNARYOP:
+                delete (TTokenPostUnaryOp*) token;
                 break;
             default:
                 // SHOULD NOT HAPPEN

@@ -47,7 +47,8 @@ TToken* TTokenBinaryOp::evaluate(TToken* pArg1, TToken* pArg2) {
     int iDenom1 = 1, iDenom2 = 1, iDenom = 0;
     bool neg1 = false, neg2 = false;
     bool asFraction = 
-        (type1 == TOKEN_FRACTION || type2 == TOKEN_FRACTION)
+        (type1 == eTokenType::TOKEN_FRACTION || 
+            type2 == eTokenType::TOKEN_FRACTION)
         && asSignedFraction(pArg1, &iNum1, &iDenom1, &neg1)
         && asSignedFraction(pArg2, &iNum2, &iDenom2, &neg2);
 
@@ -55,7 +56,7 @@ TToken* TTokenBinaryOp::evaluate(TToken* pArg1, TToken* pArg2) {
     double dVal;
 
     switch (m_action) {
-        case ACTION_ADD:
+        case eBinaryOpAction::BINARY_OP_ADD:
             if (asFraction) {
                 iNum = iNum1 * iDenom2 + iNum2 * iDenom1;
                 iDenom = iDenom1 * iDenom2;
@@ -64,7 +65,7 @@ TToken* TTokenBinaryOp::evaluate(TToken* pArg1, TToken* pArg2) {
             }
             break;
 
-        case ACTION_SUB:
+        case eBinaryOpAction::BINARY_OP_SUB:
             if (asFraction) {
                 iNum = iNum1 * iDenom2 - iNum2 * iDenom1;
                 iDenom = iDenom1 * iDenom2;
@@ -73,8 +74,8 @@ TToken* TTokenBinaryOp::evaluate(TToken* pArg1, TToken* pArg2) {
             }
             break;
 
-        case ACTION_MULT:
-        case ACTION_MULTNEG:
+        case eBinaryOpAction::BINARY_OP_MULT:
+        case eBinaryOpAction::BINARY_OP_MULTNEG:
             if (asFraction) {
                 iNum = iNum1 * iNum2;
                 iDenom = iDenom1 * iDenom2;
@@ -83,7 +84,7 @@ TToken* TTokenBinaryOp::evaluate(TToken* pArg1, TToken* pArg2) {
             }
             break;
 
-        case ACTION_DIV:
+        case eBinaryOpAction::BINARY_OP_DIV:
             if (asFraction) {
                 iNum = iNum1 * iDenom2;
                 iDenom = iDenom1 * iNum2;
@@ -94,11 +95,7 @@ TToken* TTokenBinaryOp::evaluate(TToken* pArg1, TToken* pArg2) {
     }
 
     if (asFraction) {
-        return new TTokenFraction(
-            0, 
-            ABS(iNum),
-            ABS(iDenom),
-            (iNum < 0) != (iDenom < 0));
+        return new TTokenFraction(iNum, iDenom);
     }
     return new TTokenValue(dVal);
 }

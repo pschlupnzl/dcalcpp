@@ -58,6 +58,11 @@ const std::vector<testCase_t> numberCases = {
     // { "sqrt ( 4 )", "sqrt ( 4 )", "2" },
     { "1 0 / 2 * 5", "10 / 2 * 5", "25" },
     { "1 0 * 5 / 2", "10 * 5 / 2", "25" },
+
+    { "2 @", "2^2", "4" },
+    { "3 @", "3^2", "9" },
+    { "4 . 5 @", "4.5^2", "20.25" }, 
+    // more squared cases
 };
 
 const std::vector<testCase_t> fractionCases = {

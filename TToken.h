@@ -4,6 +4,7 @@
 #include <string>
 #include "eAction.h"
 #include "eTokenType.h"
+#include "types.h"
 
 /** Operator precedence added for each nested bracket. */
 #define OP_BRACKETOFFSET 100
@@ -16,13 +17,13 @@
  * Another +1 is added for asPercent and asTax.
  */
 #define BINARY_OP_PRECEDENCE(action) ( \
-  action == BINARY_OP_ACTION_ADD ? 0 : \
-  action == BINARY_OP_ACTION_SUB ? 0 : \
-  action == BINARY_OP_ACTION_MULT ? 4 : \
-  action == BINARY_OP_ACTION_DIV ? 4 :  \
-  action == BINARY_OP_ACTION_MULTNEG ? 6 : \
-  action == BINARY_OP_ACTION_ROOT ? 8 : \
-  action == BINARY_OP_ACTION_POW ? 10 : \
+  action == eBinaryOpAction::BINARY_OP_ADD ? 0 : \
+  action == eBinaryOpAction::BINARY_OP_SUB ? 0 : \
+  action == eBinaryOpAction::BINARY_OP_MULT ? 4 : \
+  action == eBinaryOpAction::BINARY_OP_DIV ? 4 :  \
+  action == eBinaryOpAction::BINARY_OP_MULTNEG ? 6 : \
+  action == eBinaryOpAction::BINARY_OP_ROOT ? 8 : \
+  action == eBinaryOpAction::BINARY_OP_POW ? 10 : \
   0)
 
 
@@ -75,8 +76,8 @@ public:
 class TTokenValue : public TTokenResultBase {
 private:
 public:
-    TTokenValue() : TTokenResultBase(TOKEN_VALUE) { }
-    TTokenValue(double value) : TTokenResultBase(TOKEN_VALUE)
+    TTokenValue() : TTokenResultBase(eTokenType::TOKEN_VALUE) { }
+    TTokenValue(double value) : TTokenResultBase(eTokenType::TOKEN_VALUE)
     {
         m_value = value;
     }
@@ -99,14 +100,25 @@ private:
         }
     }
 public:
-    TTokenFraction() : TTokenResultBase(TOKEN_FRACTION) { };
+    TTokenFraction() : TTokenResultBase(eTokenType::TOKEN_FRACTION) { };
     TTokenFraction(int whole, int num, int denom, bool negative)
-    : TTokenResultBase(TOKEN_FRACTION) {
+    : TTokenResultBase(eTokenType::TOKEN_FRACTION) {
         m_whole = whole;
         m_num = num;
         m_denom = denom;
         m_negative = negative;
         setValue();
+    }
+    /**
+     * Initialize a new instance of the TTokenFraction class using signed
+     * imperfect fraction components.
+     */
+    TTokenFraction(int num, int denom)
+    : TTokenResultBase(eTokenType::TOKEN_FRACTION) {
+        m_whole = 0;
+        m_num = ABS(num);
+        m_denom = ABS(denom);
+        m_negative = (num < 0) != (denom < 0);
     }
     ~TTokenFraction() { }
     /**
@@ -142,7 +154,7 @@ public:
      * @param iBrktOff Current bracket offset.
      */
     TTokenBinaryOp(eBinaryOpAction action, int iBrktOff)
-        : TToken(TOKEN_BINARYOP),
+        : TToken(eTokenType::TOKEN_BINARYOP),
         m_action(action),
         m_asPercent(false),
         m_asTax(false)
@@ -163,6 +175,34 @@ public:
     TToken* evaluate(TToken* dArg1, TToken* dArg2);
 
     std::string toString();
+};
+
+/**
+ * A token representing a post-value unary action such as x! (factorial) or x²
+ * (squared).
+ */
+class TTokenPostUnaryOp : public TToken {
+private:
+    ePostUnaryOpAction m_action;
+public:
+    /** 
+     * Initializes a new instance of the TTokenPostUnaryOp class.
+     */
+    TTokenPostUnaryOp(ePostUnaryOpAction action)
+        : TToken(eTokenType::TOKEN_POSTUNARYOP)
+    {
+        m_action = action;
+    }
+    /**
+     * Evaluate the action on the given argument, returning a newly created
+     * token that represents the result of the operation.
+     */
+    TToken* evaluate(TToken* pArg);
+
+    std::string toString() {
+        return m_action == ePostUnaryOpAction::POST_UNARY_OP_POW2 ? "^2"
+        : "??";
+    }
 };
 
 #endif /* TTOKEN_H */

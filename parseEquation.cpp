@@ -45,7 +45,7 @@ void CCalculate::parseEquation() {
     m_lastError = ERROR_NONE;
     reset_pvoEquation();
     int iBrktOff = 0;
-    eLookFor uLookFor = LOOKFOR_NUMBER;
+    eLookFor uLookFor = eLookFor::LOOKFOR_NUMBER;
     std::vector<TTokenBinaryOp*> isOps;
 
 
@@ -54,17 +54,17 @@ void CCalculate::parseEquation() {
         TScan* scan = m_scan[iThisPt];
         eScanType scanType = scan->type();
         switch (uLookFor) {
-            case LOOKFOR_NUMBER:
+            case eLookFor::LOOKFOR_NUMBER:
                 if (
-                    scanType == SCAN_NUMBER
+                    scanType == eScanType::SCAN_NUMBER
                     // token.typ === eTokenType.FRACTION ||
                     // token.typ === eTokenType.TIME ||
                     // token.typ === eTokenType.ANGLE ||
                     // token.typ === eTokenType.CONSTANT
                 ) {
                     m_pvoEquation.push_back(((TScanNumber*)scan)->toToken());
-                    uLookFor = LOOKFOR_BINARYOP;
-                } else if (scanType == SCAN_OPEN) {
+                    uLookFor = eLookFor::LOOKFOR_BINARYOP;
+                } else if (scanType == eScanType::SCAN_OPEN) {
                     iBrktOff += 1;
                     uLookFor = LOOKFOR_NUMBER;
                 } else {
@@ -72,18 +72,23 @@ void CCalculate::parseEquation() {
                 }
                 break;
 
-            case LOOKFOR_BINARYOP:
+            case eLookFor::LOOKFOR_BINARYOP:
                 if (scanType == SCAN_BINARYOP) {
-                    TTokenBinaryOp* binaryToken = ((TScanBinaryOp*)scan)->toToken(iBrktOff);
+                    TTokenBinaryOp* binaryToken = 
+                        ((TScanBinaryOp*)scan)->toToken(iBrktOff);
                     processOps(binaryToken, m_pvoEquation, isOps);
                     isOps.push_back(binaryToken);
-                    uLookFor = LOOKFOR_NUMBER;
-                } else if (scanType == SCAN_CLOSE) {
+                    uLookFor = eLookFor::LOOKFOR_NUMBER;
+                } else if (scanType == eScanType::SCAN_POSTUNARYOP) {
+                    m_pvoEquation.push_back(
+                        ((TScanPostUnaryOp*)scan)->toToken()
+                    );
+                } else if (scanType == eScanType::SCAN_CLOSE) {
                     iBrktOff -= 1;
                     if (iBrktOff < 0) {
                         return errorParsing(iThisPt, PARSE_MISSING_OPEN);
                     }
-                    uLookFor = LOOKFOR_BINARYOP;
+                    uLookFor = eLookFor::LOOKFOR_BINARYOP;
                 } else {
                     return errorParsing(iThisPt, PARSE_BINARYOP_EXPECTED);
                 }
@@ -93,7 +98,7 @@ void CCalculate::parseEquation() {
 
     if (iBrktOff > 0) {
         // NOP - Automatically close brackets.
-    } else if (uLookFor == LOOKFOR_NUMBER) {
+    } else if (uLookFor == eLookFor::LOOKFOR_NUMBER) {
         return errorParsing(n, PARSE_NUMBER_EXPECTED);
     }
 

@@ -7,6 +7,8 @@ enum eScanType {
   SCAN_NUMBER,
   /** Input binary operator. */
   SCAN_BINARYOP,
+  /** Input a post-unary operator. */
+  SCAN_POSTUNARYOP,
   /** Open parenthesis -(-. */
   SCAN_OPEN,
   /** Close parenthesis -)-. */

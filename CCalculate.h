@@ -20,13 +20,13 @@
 //  * Another +1 is added for asPercent and asTax.
 //  */
 // #define BINARY_OP_PRECEDENCE(action) ( \
-//   action == BINARY_OP_ACTION_ADD ? 0 : \
-//   action == BINARY_OP_ACTION_SUB ? 0 : \
-//   action == BINARY_OP_ACTION_MULT ? 4 : \
-//   action == BINARY_OP_ACTION_DIV ? 4 :  \
-//   action == BINARY_OP_ACTION_MULTNEG ? 6 : \
-//   action == BINARY_OP_ACTION_ROOT ? 8 : \
-//   action == BINARY_OP_ACTION_POW ? 10 : \
+//   action == eBinaryOpAction::BINARY_OP_ADD ? 0 : \
+//   action == eBinaryOpAction::BINARY_OP_SUB ? 0 : \
+//   action == eBinaryOpAction::BINARY_OP_MULT ? 4 : \
+//   action == eBinaryOpAction::BINARY_OP_DIV ? 4 :  \
+//   action == eBinaryOpAction::BINARY_OP_MULTNEG ? 6 : \
+//   action == eBinaryOpAction::BINARY_OP_ROOT ? 8 : \
+//   action == eBinaryOpAction::BINARY_OP_POW ? 10 : \
 //   0)
 
 /** 

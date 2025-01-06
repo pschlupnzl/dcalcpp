@@ -33,7 +33,6 @@ bool CCalculate::scanSilent(eAction action) {
                 m_scan.push_back(last);
             }
             ((TScanNumber*) last)->append(action);
-
             break;
 
         case eAction::ACTION_ADD:
@@ -42,12 +41,14 @@ bool CCalculate::scanSilent(eAction action) {
         case eAction::ACTION_DIV:
             if (type == SCAN_NUMBER || type == SCAN_CLOSE) {
                 m_scan.push_back(new TScanBinaryOp(
-                    action == eAction::ACTION_ADD ? BINARY_OP_ACTION_ADD :
-                    action == eAction::ACTION_MULT ? BINARY_OP_ACTION_MULT :
-                    action == eAction::ACTION_SUB ? BINARY_OP_ACTION_SUB :
-                    action == eAction::ACTION_DIV ? BINARY_OP_ACTION_DIV :
-                    BINARY_OP_ACTION_ADD
+                    action == eAction::ACTION_ADD ? eBinaryOpAction::BINARY_OP_ADD :
+                    action == eAction::ACTION_MULT ? eBinaryOpAction::BINARY_OP_MULT :
+                    action == eAction::ACTION_SUB ? eBinaryOpAction::BINARY_OP_SUB :
+                    action == eAction::ACTION_DIV ? eBinaryOpAction::BINARY_OP_DIV :
+                    eBinaryOpAction::BINARY_OP_ADD
                 ));
+            } else {
+                return false;
             }
             break;
 
@@ -58,6 +59,18 @@ bool CCalculate::scanSilent(eAction action) {
         case eAction::ACTION_CLOSE:
             m_scan.push_back(new TScanClose());
             break;
+
+        case eAction::ACTION_POW2:
+        case eAction::ACTION_SQRT:
+            if (type == SCAN_NUMBER || type == SCAN_CLOSE) {
+                m_scan.push_back(new TScanPostUnaryOp(
+                    ePostUnaryOpAction::POST_UNARY_OP_POW2
+                ));
+            } else {
+                return false;
+            }
+            break;
+
         default:
             // All other characters not scanned.
             return false;
