@@ -71,11 +71,13 @@ public:
     }
     std::string toString() {
         return std::string(
-          m_action == eBinaryOpAction::BINARY_OP_ADD ? " + " :
-          m_action == eBinaryOpAction::BINARY_OP_MULT ? " x " :
-          m_action == eBinaryOpAction::BINARY_OP_SUB ? " - " :
-        //   m_action == eBinaryOpAction::BINARY_OP_DIV ? " ÷ " :
-          m_action == eBinaryOpAction::BINARY_OP_DIV ? " / " :
+          m_action == eBinaryOpAction::BINARY_OP_ADD ? "+" :
+          m_action == eBinaryOpAction::BINARY_OP_MULT ? "x" :
+          m_action == eBinaryOpAction::BINARY_OP_SUB ? "-" :
+        //   m_action == eBinaryOpAction::BINARY_OP_DIV ? "÷" :
+          m_action == eBinaryOpAction::BINARY_OP_DIV ? "/" :
+          m_action == eBinaryOpAction::BINARY_OP_POW ? "^" :
+          m_action == eBinaryOpAction::BINARY_OP_ROOT ? "v" :
           "?");
     }
 };

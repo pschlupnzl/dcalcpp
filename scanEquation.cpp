@@ -2,10 +2,12 @@
 #include "CCalculate.h"
 #include "eAction.h"
 
-void CCalculate::scan(eAction action) {
+bool CCalculate::scan(eAction action) {
     if (scanSilent(action)) {
         m_actions.push_back(action);
+        return true;
     };
+    return false;
 }
 
 bool CCalculate::scanSilent(eAction action) {
@@ -39,12 +41,16 @@ bool CCalculate::scanSilent(eAction action) {
         case eAction::ACTION_MULT:
         case eAction::ACTION_SUB:
         case eAction::ACTION_DIV:
+        case eAction::ACTION_POW:
+        case eAction::ACTION_ROOT:
             if (type == eScanType::SCAN_NUMBER || type == eScanType::SCAN_CLOSE) {
                 m_scan.push_back(new TScanBinaryOp(
                     action == eAction::ACTION_ADD ? eBinaryOpAction::BINARY_OP_ADD :
                     action == eAction::ACTION_MULT ? eBinaryOpAction::BINARY_OP_MULT :
                     action == eAction::ACTION_SUB ? eBinaryOpAction::BINARY_OP_SUB :
                     action == eAction::ACTION_DIV ? eBinaryOpAction::BINARY_OP_DIV :
+                    action == eAction::ACTION_POW ? eBinaryOpAction::BINARY_OP_POW :
+                    action == eAction::ACTION_ROOT ? eBinaryOpAction::BINARY_OP_ROOT :
                     eBinaryOpAction::BINARY_OP_ADD
                 ));
             } else {
@@ -53,6 +59,7 @@ bool CCalculate::scanSilent(eAction action) {
             break;
 
         case eAction::ACTION_OPEN:
+        case eAction::ACTION_OPEN_AUTO:
             m_scan.push_back(new TScanOpen());
             break;
 
@@ -96,11 +103,8 @@ void CCalculate::backspace() {
         m_actions.pop_back();
 
         // Remove auto-inserted unary operator with parentheses.
-        if (action == eAction::ACTION_OPEN && m_actions.size() > 0) {
-            switch (m_actions.back()) {
-                case eAction::ACTION_SQRT:
-                    m_actions.pop_back();
-            }
+        if (action == eAction::ACTION_OPEN_AUTO && m_actions.size() > 0) {
+            m_actions.pop_back();
         }
         reset_scan();
         for (eAction action : m_actions) {

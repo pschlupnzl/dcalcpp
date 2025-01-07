@@ -48,6 +48,8 @@ TToken* TTokenBinaryOp::evaluate(TToken* pArg1, TToken* pArg2) {
             type2 == eTokenType::TOKEN_FRACTION)
         && asSignedFraction(pArg1, &iNum1, &iDenom1, &neg1)
         && asSignedFraction(pArg2, &iNum2, &iDenom2, &neg2);
+    /** Value indicating whether result is a fraction. */
+    bool isFraction = false;
 
     /** Evaluated value for numerical tokens. */
     double dVal;
@@ -57,6 +59,7 @@ TToken* TTokenBinaryOp::evaluate(TToken* pArg1, TToken* pArg2) {
             if (asFraction) {
                 iNum = iNum1 * iDenom2 + iNum2 * iDenom1;
                 iDenom = iDenom1 * iDenom2;
+                isFraction = true;
             } else {
                 dVal = dArg1 + dArg2;
             }
@@ -66,6 +69,7 @@ TToken* TTokenBinaryOp::evaluate(TToken* pArg1, TToken* pArg2) {
             if (asFraction) {
                 iNum = iNum1 * iDenom2 - iNum2 * iDenom1;
                 iDenom = iDenom1 * iDenom2;
+                isFraction = true;
             } else {
                 dVal = dArg1 - dArg2;
             }
@@ -76,6 +80,7 @@ TToken* TTokenBinaryOp::evaluate(TToken* pArg1, TToken* pArg2) {
             if (asFraction) {
                 iNum = iNum1 * iNum2;
                 iDenom = iDenom1 * iDenom2;
+                isFraction = true;
             } else {
                 dVal = dArg1 * dArg2;
             }
@@ -85,13 +90,22 @@ TToken* TTokenBinaryOp::evaluate(TToken* pArg1, TToken* pArg2) {
             if (asFraction) {
                 iNum = iNum1 * iDenom2;
                 iDenom = iDenom1 * iNum2;
+                isFraction = true;
             } else {
                 dVal = dArg1 / dArg2;
             }
             break;
+
+        case eBinaryOpAction::BINARY_OP_POW:
+            dVal = std::pow(dArg1, dArg2);
+            break;
+
+        case eBinaryOpAction::BINARY_OP_ROOT:
+            dVal = std::pow(dArg2, 1.00 / dArg1);
+            break;
     }
 
-    if (asFraction) {
+    if (isFraction) {
         return new TTokenFraction(iNum, iDenom);
     }
     return new TTokenValue(dVal);

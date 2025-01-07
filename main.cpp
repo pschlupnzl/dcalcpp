@@ -34,8 +34,10 @@
 
 CCalculate calc;
 
-IEvalEquationOptions options = {
-    .trigRad = true
+ICalcOptions options = {
+    .trigRad = true,
+    .deciSep = 0x00,
+    .thouSep = 0x00
 };
 
 void setCursor(int16_t cx, int16_t cy) {
@@ -122,22 +124,19 @@ void interactive() {
             calc.backspace();
         } else {
             eAction action = actionFromKeyboard(ch);
-            calc.scan(action);
-
-            // Add auto-open bracket for unary operator.
-            switch(action) {
-                case eAction::ACTION_SQRT:
-                    calc.scan(eAction::ACTION_OPEN);
-                    break;
+            if(calc.scan(action)) {
+                // Add auto-open bracket for unary operator.
+                switch(action) {
+                    case eAction::ACTION_SQRT:
+                    case eAction::ACTION_ROOT:
+                        calc.scan(eAction::ACTION_OPEN_AUTO);
+                        break;
+                }
             }
         }
     }
     endwin();
 }
-
-// int main () {
-//     runTests();
-// }
 
 int main(int argc, char **argv) {
     const char* input = nullptr;
@@ -176,7 +175,8 @@ int main(int argc, char **argv) {
             // "1_2_4 + 2_5_124";
             // "1_2+2_3";
             // "1+2*34567.34";
-            "V(~4)";
+            // "V(4)";
+            "4^3";
         calc.reset();
         for (const char* pch = input; *pch; ++pch) {
             calc.scan(actionFromKeyboard(*pch));

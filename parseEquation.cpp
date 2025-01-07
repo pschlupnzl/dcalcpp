@@ -63,6 +63,7 @@ void CCalculate::parseEquation() {
                     // token.typ === eTokenType.ANGLE ||
                     // token.typ === eTokenType.CONSTANT
                 ) {
+                    // TODO: if dVal<0: push_back(-1*)
                     m_pvoEquation.push_back(((TScanNumber*)scan)->toToken());
                     //// std::cout << "parseEquation@67 m_pvoEquation push number " << scan->toString() << std::endl;
                     uLookFor = eLookFor::LOOKFOR_BINARYOP;

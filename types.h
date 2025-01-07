@@ -22,4 +22,14 @@ typedef unsigned short int uint16_t;
 #define ABS(x) ((x) < 0 ? (-(x)) : (x))
 #endif /* ABS */
 
+/** Options for evaluating and rendering results. */
+typedef struct ICalcOptions {
+  /** Value indicating whether to use Radians for trig functions (instead of rad). */
+  bool trigRad;
+  /** Decimal separator, or 0x00 for default '.'. */
+  char deciSep;
+  /** Thousands separator, or 0x00 for none. */
+  char thouSep;
+} ICalcOptions;
+
 #endif /* TYPES_H */

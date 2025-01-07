@@ -28,6 +28,7 @@ enum eAction {
     ACTION_SUB,
     // Brackets.
     ACTION_OPEN,
+    ACTION_OPEN_AUTO,
     ACTION_CLOSE,
     // ACTION_CLOSE_AUTO,
     // // Powers.

@@ -93,6 +93,8 @@ std::string TTokenBinaryOp::toString() {
         m_action == eBinaryOpAction::BINARY_OP_SUB ? "-" :
         // m_action == eBinaryOpAction::BINARY_OP_DIV ? "÷" :
         m_action == eBinaryOpAction::BINARY_OP_DIV ? "/" :
+        m_action == eBinaryOpAction::BINARY_OP_POW ? "^" :
+        m_action == eBinaryOpAction::BINARY_OP_ROOT ? "V" :
         "?");
     if (m_asPercent) {
         str += "%";

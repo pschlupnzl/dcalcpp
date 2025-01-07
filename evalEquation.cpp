@@ -4,7 +4,7 @@
 /**
  * Evaluate the equation.
  */
-void CCalculate::evalEquation(IEvalEquationOptions &options) {
+void CCalculate::evalEquation(const ICalcOptions &options) {
     reset_result();
 
     /** Number of tokens on the equation stack. */

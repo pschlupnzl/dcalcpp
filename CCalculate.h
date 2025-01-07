@@ -8,6 +8,7 @@
 #include "eAction.h"
 #include "TScan.h"
 #include "TToken.h"
+#include "types.h"
 
 // /** Operator precedence added for each nested bracket. */
 // #define OP_BRACKETOFFSET 100
@@ -43,11 +44,6 @@
   action == UNARY_OP_ACTION_ACOS ? : 26 \
   action == UNARY_OP_ACTION_ATAN ? : 27 \
   20)
-
-typedef struct {
-  /** Value indicating whether to use Radians for trig functions (instead of rad). */
-    bool trigRad;
-} IEvalEquationOptions;
 
 /**
  * Class to evaluate an equation to find the answer.
@@ -100,18 +96,19 @@ public:
     void reset_result();
 
     /**
-     * Scan the character and add to the current equation.
+     * Scan the character and add to the current equation, returning a value
+     * indicating whether the action was allowed.
      * @param action The keypress action to add to the current equation.
     */
-    void scan(eAction action);
+    bool scan(eAction action);
 
-    /** Remove the most recent character. */
+    /** Remove the most recent action (character), returning the action removed. */
     void backspace();
 
     /** Parse the tokens into the RPN stack. */
     void parseEquation();
     /** Evaluate the RPN stack to attain the result. */
-    void evalEquation(IEvalEquationOptions& options);
+    void evalEquation(const ICalcOptions& options);
 
     /**
      * Iterate over the scanned tokens, used e.g. to display the read equation.
