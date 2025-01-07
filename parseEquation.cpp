@@ -1,3 +1,4 @@
+#include <iostream>
 #include <string>
 #include "eLookFor.h"
 #include "CCalculate.h"
@@ -10,10 +11,10 @@
 void processOps (
   int iThisOp,
   std::vector<TToken*> &pvoEquation,
-  std::vector<TTokenBinaryOp*> &isOps
+  std::vector<ITokenOp*> &isOps
 ) {
     /** Previous operator on stack. */
-    TTokenBinaryOp* iPrevOp;
+    ITokenOp* iPrevOp;
 
     for (; isOps.size() > 0; ) {
         iPrevOp = isOps.back();
@@ -31,7 +32,7 @@ void processOps (
 void processOps(
     TTokenBinaryOp* iThisOp,
     std::vector<TToken*> &pvoEquation,
-    std::vector<TTokenBinaryOp*> &isOps
+    std::vector<ITokenOp*> &isOps
 ) {
     return processOps(iThisOp->op(), pvoEquation, isOps);
 }
@@ -46,7 +47,7 @@ void CCalculate::parseEquation() {
     reset_pvoEquation();
     int iBrktOff = 0;
     eLookFor uLookFor = eLookFor::LOOKFOR_NUMBER;
-    std::vector<TTokenBinaryOp*> isOps;
+    std::vector<ITokenOp*> isOps;
 
 
     size_t n = m_scan.size();
@@ -63,17 +64,24 @@ void CCalculate::parseEquation() {
                     // token.typ === eTokenType.CONSTANT
                 ) {
                     m_pvoEquation.push_back(((TScanNumber*)scan)->toToken());
+                    //// std::cout << "parseEquation@67 m_pvoEquation push number " << scan->toString() << std::endl;
                     uLookFor = eLookFor::LOOKFOR_BINARYOP;
                 } else if (scanType == eScanType::SCAN_OPEN) {
                     iBrktOff += 1;
-                    uLookFor = LOOKFOR_NUMBER;
+                    //// uLookFor = eLookFor::LOOKFOR_NUMBER;
+                } else if (scanType == eScanType::SCAN_UNARYOP) {
+                    //// std::cout << "parseEquation@71 isOps push unary op" << std::endl;
+                    isOps.push_back(
+                        ((TScanUnaryOp*)scan)->toToken(iBrktOff)
+                    );
+                    uLookFor = eLookFor::LOOKFOR_BRACKET;
                 } else {
                     return errorParsing(iThisPt, PARSE_NUMBER_EXPECTED);
                 }
                 break;
 
             case eLookFor::LOOKFOR_BINARYOP:
-                if (scanType == SCAN_BINARYOP) {
+                if (scanType == eScanType::SCAN_BINARYOP) {
                     TTokenBinaryOp* binaryToken = 
                         ((TScanBinaryOp*)scan)->toToken(iBrktOff);
                     processOps(binaryToken, m_pvoEquation, isOps);
@@ -93,6 +101,16 @@ void CCalculate::parseEquation() {
                     return errorParsing(iThisPt, PARSE_BINARYOP_EXPECTED);
                 }
                 break;
+
+            case eLookFor::LOOKFOR_BRACKET:
+                if (scanType == eScanType::SCAN_OPEN) {
+                    iBrktOff += 1;
+                    uLookFor = eLookFor::LOOKFOR_NUMBER;
+                } else {
+                    return errorParsing(iThisPt, PARSE_NUMBER_EXPECTED);
+                }
+                break;
+                
         } // end switch
     } // end for
 
@@ -102,6 +120,7 @@ void CCalculate::parseEquation() {
         return errorParsing(n, PARSE_NUMBER_EXPECTED);
     }
 
+    //// std::cout << "parseEquation@113 Final processOps" << std::endl;
     processOps(-1, m_pvoEquation, isOps);
 
 }

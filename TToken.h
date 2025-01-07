@@ -136,9 +136,18 @@ public:
 };
 
 /**
+ * Abstract class (interface) representing operators with precedence.
+ */
+class ITokenOp : public TToken {
+public:
+    ITokenOp(eTokenType type) : TToken(type) { }
+    virtual int op() = 0;
+};
+
+/**
  * A token representing a numerical value during execution.
  */
-class TTokenBinaryOp : public TToken {
+class TTokenBinaryOp : public ITokenOp {
 private:
     eBinaryOpAction m_action;
     bool m_asPercent;
@@ -154,7 +163,7 @@ public:
      * @param iBrktOff Current bracket offset.
      */
     TTokenBinaryOp(eBinaryOpAction action, int iBrktOff)
-        : TToken(eTokenType::TOKEN_BINARYOP),
+        : ITokenOp(eTokenType::TOKEN_BINARYOP),
         m_action(action),
         m_asPercent(false),
         m_asTax(false)
@@ -178,6 +187,35 @@ public:
 };
 
 /**
+ * A token representing a unary operator that predeces its argument, such as
+ * sin(x) or √x.
+ */
+class TTokenUnaryOp : public ITokenOp {
+private:
+    eUnaryOpAction m_action;
+    /** Operator precedence. */
+    int m_op;
+public:
+    TTokenUnaryOp(eUnaryOpAction action, int iBrktOff)
+        : ITokenOp(eTokenType::TOKEN_UNARYOP) {
+        m_action = action;
+        // Operator precedence just below the next bracket offset.
+        m_op = iBrktOff * OP_BRACKETOFFSET
+             + (OP_BRACKETOFFSET - 1);
+    }
+    /** Returns this operator's precedence. */
+    int op() { return m_op; }
+    /** Evaluate the action on the given argument. */
+    TToken* evaluate(TToken* pArg);
+
+    std::string toString() {
+        return std::string(
+            m_action == eUnaryOpAction::UNARY_OP_SQRT ? "2v" :
+            "?");
+    }
+};
+
+/**
  * A token representing a post-value unary action such as x! (factorial) or x²
  * (squared).
  */
@@ -189,8 +227,7 @@ public:
      * Initializes a new instance of the TTokenPostUnaryOp class.
      */
     TTokenPostUnaryOp(ePostUnaryOpAction action)
-        : TToken(eTokenType::TOKEN_POSTUNARYOP)
-    {
+        : TToken(eTokenType::TOKEN_POSTUNARYOP) {
         m_action = action;
     }
     /**

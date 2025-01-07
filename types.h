@@ -13,6 +13,10 @@ typedef unsigned short int uint16_t;
 // #define uint16_t unsigned short int
 #endif /* uint16_t */
 
+/** Floating point precision. */
+#define EPS 1e-12
+
+
 #ifndef ABS
 // Absolute value as ternary rather than math operator.
 #define ABS(x) ((x) < 0 ? (-(x)) : (x))

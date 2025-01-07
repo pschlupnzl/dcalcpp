@@ -20,7 +20,26 @@ void CCalculate::reset_scan() {
     while (m_scan.size() > 0) {
         TScan* scan = m_scan.back();
         m_scan.pop_back();
-        delete scan;
+        switch (scan->type()) {
+            case eScanType::SCAN_NUMBER:
+                delete (TScanNumber*) scan;
+                break;
+            case eScanType::SCAN_BINARYOP:
+                delete (TScanBinaryOp*) scan;
+                break;
+            case eScanType::SCAN_UNARYOP:
+                delete (TScanUnaryOp*) scan;
+                break;
+            case eScanType::SCAN_POSTUNARYOP:
+                delete (TScanPostUnaryOp*) scan;
+                break;
+            case eScanType::SCAN_OPEN:
+                delete (TScanOpen*) scan;
+                break;
+            case eScanType::SCAN_CLOSE:
+                delete (TScanClose*) scan;
+                break;
+        }
     }
 }
 
@@ -38,11 +57,11 @@ void CCalculate::reset_pvoEquation() {
             case eTokenType::TOKEN_BINARYOP:
                 delete (TTokenBinaryOp*) token;
                 break;
+            case eTokenType::TOKEN_UNARYOP:
+                delete (TTokenUnaryOp*) token;
+                break;
             case eTokenType::TOKEN_POSTUNARYOP:
                 delete (TTokenPostUnaryOp*) token;
-                break;
-            default:
-                // SHOULD NOT HAPPEN
                 break;
         }
     }

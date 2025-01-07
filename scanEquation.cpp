@@ -12,7 +12,7 @@ bool CCalculate::scanSilent(eAction action) {
     TScan* last = m_scan.size() <= 0 
         ? nullptr 
         : m_scan.back();
-    eScanType type = last ? last->type() : SCAN_UNDEFINED;
+    eScanType type = last ? last->type() : eScanType::SCAN_UNDEFINED;
 
     switch (action) {
         case eAction::ACTION_NUM0:
@@ -28,7 +28,7 @@ bool CCalculate::scanSilent(eAction action) {
         case eAction::ACTION_DECIMAL:
         case eAction::ACTION_FRACTION:
         case eAction::ACTION_NEGATE:
-            if (!last || type != SCAN_NUMBER) {
+            if (!last || type != eScanType::SCAN_NUMBER) {
                 last = new TScanNumber();
                 m_scan.push_back(last);
             }
@@ -39,7 +39,7 @@ bool CCalculate::scanSilent(eAction action) {
         case eAction::ACTION_MULT:
         case eAction::ACTION_SUB:
         case eAction::ACTION_DIV:
-            if (type == SCAN_NUMBER || type == SCAN_CLOSE) {
+            if (type == eScanType::SCAN_NUMBER || type == eScanType::SCAN_CLOSE) {
                 m_scan.push_back(new TScanBinaryOp(
                     action == eAction::ACTION_ADD ? eBinaryOpAction::BINARY_OP_ADD :
                     action == eAction::ACTION_MULT ? eBinaryOpAction::BINARY_OP_MULT :
@@ -60,9 +60,21 @@ bool CCalculate::scanSilent(eAction action) {
             m_scan.push_back(new TScanClose());
             break;
 
-        case eAction::ACTION_POW2:
         case eAction::ACTION_SQRT:
-            if (type == SCAN_NUMBER || type == SCAN_CLOSE) {
+            if (!last ||
+                type == eScanType::SCAN_OPEN ||
+                type == eScanType::SCAN_BINARYOP) {
+                m_scan.push_back(new TScanUnaryOp(
+                    action == eAction::ACTION_SQRT ? eUnaryOpAction::UNARY_OP_SQRT :
+                    eUnaryOpAction::UNARY_OP_SQRT
+                ));
+            } else {
+                return false;
+            }
+            break;
+
+        case eAction::ACTION_POW2:
+            if (type == eScanType::SCAN_NUMBER || type == eScanType::SCAN_CLOSE) {
                 m_scan.push_back(new TScanPostUnaryOp(
                     ePostUnaryOpAction::POST_UNARY_OP_POW2
                 ));
@@ -80,7 +92,16 @@ bool CCalculate::scanSilent(eAction action) {
 
 void CCalculate::backspace() {
     if (m_actions.size() > 0) {
+        eAction action = m_actions.back();
         m_actions.pop_back();
+
+        // Remove auto-inserted unary operator with parentheses.
+        if (action == eAction::ACTION_OPEN && m_actions.size() > 0) {
+            switch (m_actions.back()) {
+                case eAction::ACTION_SQRT:
+                    m_actions.pop_back();
+            }
+        }
         reset_scan();
         for (eAction action : m_actions) {
             scanSilent(action);

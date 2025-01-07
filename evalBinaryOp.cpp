@@ -2,9 +2,6 @@
 #include "TToken.h"
 #include "types.h"
 
-/** Floating point precision. */
-#define EPS 1e-12
-
 /**
  * Converts the current value into a **signed improper** fraction (i.e. whole
  * number is zero, numerator is signed, denominator is positive, and the

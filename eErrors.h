@@ -6,6 +6,8 @@ enum eErrors {
     ERROR_NONE,
     /** Looking for a number but didn't get a value token. */
     PARSE_NUMBER_EXPECTED,
+    /** Looking for an opening bracket but didn't get one. */
+    PARSE_BRACKET_EXPECTED,
     /** Looking for a binary operator but didn't get one. */
     PARSE_BINARYOP_EXPECTED,
     /** Too many closed brackets without matching opens. */
@@ -13,7 +15,9 @@ enum eErrors {
 
     /** A binary operator does not have two operands to work on. */
     EVAL_BINARY_STACK_UNDERFLOW,
-    /** A post unary operator does not have two operands to work on. */
+    /** A unary operator does not have an operand to work on. */
+    EVAL_UNARY_STACK_UNDERFLOW,
+    /** A post unary operator does not have an operand to work on. */
     EVAL_POST_UNARY_STACK_UNDERFLOW,
     /**
      * A binary operator could not be executed because the arguments didn't

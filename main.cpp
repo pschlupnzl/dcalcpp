@@ -121,7 +121,15 @@ void interactive() {
         } else if (ch == CHAR_BACKSPACE || ch == CHAR_DELETE) {
             calc.backspace();
         } else {
-            calc.scan(actionFromKeyboard(ch));
+            eAction action = actionFromKeyboard(ch);
+            calc.scan(action);
+
+            // Add auto-open bracket for unary operator.
+            switch(action) {
+                case eAction::ACTION_SQRT:
+                    calc.scan(eAction::ACTION_OPEN);
+                    break;
+            }
         }
     }
     endwin();
@@ -162,12 +170,13 @@ int main(int argc, char **argv) {
     } else if (input == nullptr) {
         input =
             // "(1+2)*3";
-            "1+2*3";
+            // "1+2*3";
             // "11";
             // "11+22*33";
             // "1_2_4 + 2_5_124";
             // "1_2+2_3";
             // "1+2*34567.34";
+            "V(~4)";
         calc.reset();
         for (const char* pch = input; *pch; ++pch) {
             calc.scan(actionFromKeyboard(*pch));

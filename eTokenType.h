@@ -23,8 +23,8 @@ enum eTokenType {
   //  * by the allowed buttons, e.g. excludes time and angles.
   //  */
   // TOKEN_BINARYPOW,
-  // /** Unary operator or function, e.g. "sin". */
-  // TOKEN_UNARYOP,
+  /** Unary operator or function, e.g. "sin". */
+  TOKEN_UNARYOP,
   /** Unary operator after the argument, e.g. "!". */
   TOKEN_POSTUNARYOP,
   // /** Open bracket, "(". */

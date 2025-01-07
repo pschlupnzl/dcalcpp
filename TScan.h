@@ -80,6 +80,24 @@ public:
     }
 };
 
+class TScanUnaryOp : public TScan {
+private:
+    eUnaryOpAction m_action;
+public:
+    TScanUnaryOp(eUnaryOpAction action)
+        : TScan(eScanType::SCAN_UNARYOP) {
+        m_action = action;
+    }
+    TTokenUnaryOp* toToken(int iBrktOff) {
+        return new TTokenUnaryOp(m_action, iBrktOff);
+    }
+    std::string toString() {
+        return std::string(
+            m_action == eUnaryOpAction::UNARY_OP_SQRT ? "2v" :
+            "?");
+    }
+};
+
 class TScanPostUnaryOp : public TScan {
 private:
     ePostUnaryOpAction m_action;
