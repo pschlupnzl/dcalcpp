@@ -3,10 +3,10 @@
 
 #include <iostream>
 
-TToken* TTokenPostUnaryOp::evaluate(TToken *pArg)
+ITokenResultBase* TTokenPostUnaryOp::evaluate(ITokenResultBase *pArg)
 {
     eTokenType type = pArg->type();
-    double dVal = ((TTokenResultBase*)pArg)->value();
+    double dVal = pArg->value();
 
     int num, denom;
     bool neg;

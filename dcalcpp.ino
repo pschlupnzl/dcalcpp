@@ -107,7 +107,7 @@ void redraw (bool erase=false) {
   lcdToken.setMetrics(8, -20, 0);
 
   // lcd.setFont(&FreeSans24pt7b);
-  ccalc.forEach([lcd, &lcdToken, &cx, &cy](TScan* scan) {
+  ccalc.forEach([lcd, &lcdToken, &cx, &cy](IScan* scan) {
     eScanType type = scan->type();
     lcd.setTextColor(
       type == SCAN_BINARYOP ? ST77XX_BLUE
@@ -122,7 +122,7 @@ void redraw (bool erase=false) {
   lcd.setCursor(20, 120);
   lcd.setTextColor(DISPLAY_FG);
   setFont(0);
-  TToken* result = ccalc.result();
+  ITokenResultBase* result = ccalc.result();
   if (result != nullptr) {
     lcd.print("= ");
     cx = lcd.getCursorX();

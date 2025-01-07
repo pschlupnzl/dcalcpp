@@ -10,7 +10,7 @@
  */
 void processOps (
   int iThisOp,
-  std::vector<TToken*> &pvoEquation,
+  std::vector<IToken*> &pvoEquation,
   std::vector<ITokenOp*> &isOps
 ) {
     /** Previous operator on stack. */
@@ -31,7 +31,7 @@ void processOps (
 
 void processOps(
     ITokenOp* iThisOp,
-    std::vector<TToken*> &pvoEquation,
+    std::vector<IToken*> &pvoEquation,
     std::vector<ITokenOp*> &isOps
 ) {
     return processOps(iThisOp->op(), pvoEquation, isOps);
@@ -52,7 +52,7 @@ void CCalculate::parseEquation() {
 
     size_t n = m_scan.size();
     for (size_t iThisPt = 0; iThisPt < n; iThisPt++) {
-        TScan* scan = m_scan[iThisPt];
+        IScan* scan = m_scan[iThisPt];
         eScanType scanType = scan->type();
         switch (uLookFor) {
             case eLookFor::LOOKFOR_NUMBER:

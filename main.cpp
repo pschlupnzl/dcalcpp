@@ -74,7 +74,7 @@ void redraw() {
     cx = 0;
     cy = 6;
     move(cy, cx);
-    TToken* result = calc.result();
+    ITokenResultBase* result = calc.result();
     if (result == nullptr) {
         printw("Type to enter an equation.");
     } else {
@@ -85,7 +85,7 @@ void redraw() {
 
     cx = 0;
     cy = 2;
-    calc.forEach([&cx, &cy, &lcdToken](TScan* scan) {
+    calc.forEach([&cx, &cy, &lcdToken](IScan* scan) {
         int16_t out_tw;
         lcdToken.getBounds(scan, cx, cy, &out_tw);
         lcdToken.print(cx, cy);

@@ -28,24 +28,12 @@
 
 
 
-class TToken {
-protected:
-    eTokenType m_type;
+class IToken {
 public:
-    /**
-     * Initializes a new instance of the TToken class with the given token type.
-     * @param type Type of token derived from this base class.
-     */
-    TToken(eTokenType type)
-        : m_type(type) {}
-    virtual ~TToken() { }
-
     /** Returns the type of entity represented by this token. */
-    eTokenType type() const { return m_type; }
-
-    virtual std::string toString() {
-        return std::string("Tok:") + std::to_string(m_type);
-    }
+    virtual eTokenType type() = 0;
+    /** Returns a string representation of the token. */
+    virtual std::string toString() = 0;
 };
 
 /**
@@ -55,37 +43,40 @@ public:
  *  - eTokenType.TIME
  *  - eTokenType.ANGLE.
  */
-class TTokenResultBase : public TToken {
-protected:
-    /** Numerical value of the token. */
-    double m_value;
-    // /** Parent token, if derived. */
-    // TToken* m_parent;
-    // /** Value indicating that this token represents the solved RHS. */
-    // bool m_solve;
+class ITokenResultBase : public IToken {
+// protected:
+//     /** Numerical value of the token. */
+//     double m_value;
+//     // /** Parent token, if derived. */
+//     // TToken* m_parent;
+//     // /** Value indicating that this token represents the solved RHS. */
+//     // bool m_solve;
 public:
-    TTokenResultBase(eTokenType type) : TToken(type) { m_value = 0; }
-    virtual ~TTokenResultBase() { }
+    // TTokenResultBase(eTokenType type) { m_value = 0; }
+    // virtual ~TTokenResultBase() { }
     /** Returns the numerical value of this token. */
-    double value() { return m_value; }
+    virtual double value() = 0;
 };
 
 /**
  * A token representing a numerical quantity, as resulting from an evaluation.
  */
-class TTokenValue : public TTokenResultBase {
+class TTokenValue : public ITokenResultBase {
 private:
+    double m_value;
 public:
-    TTokenValue() : TTokenResultBase(eTokenType::TOKEN_VALUE) { }
-    TTokenValue(double value) : TTokenResultBase(eTokenType::TOKEN_VALUE)
-    {
+    TTokenValue(double value = 0) {
         m_value = value;
     }
+    eTokenType type() { return eTokenType::TOKEN_VALUE; }
+    double value() { return m_value; }
     std::string toString();
 };
 
-class TTokenFraction : public TTokenResultBase {
+class TTokenFraction : public ITokenResultBase {
 private:
+    double m_value;
+
     int m_whole;
     int m_num;
     int m_denom;
@@ -100,9 +91,7 @@ private:
         }
     }
 public:
-    TTokenFraction() : TTokenResultBase(eTokenType::TOKEN_FRACTION) { };
-    TTokenFraction(int whole, int num, int denom, bool negative)
-    : TTokenResultBase(eTokenType::TOKEN_FRACTION) {
+    TTokenFraction(int whole, int num, int denom, bool negative) {
         m_whole = whole;
         m_num = num;
         m_denom = denom;
@@ -113,14 +102,14 @@ public:
      * Initialize a new instance of the TTokenFraction class using signed
      * imperfect fraction components.
      */
-    TTokenFraction(int num, int denom)
-    : TTokenResultBase(eTokenType::TOKEN_FRACTION) {
+    TTokenFraction(int num, int denom) {
         m_whole = 0;
         m_num = ABS(num);
         m_denom = ABS(denom);
         m_negative = (num < 0) != (denom < 0);
     }
-    ~TTokenFraction() { }
+    eTokenType type() { return eTokenType::TOKEN_FRACTION; }
+    double value() { return m_value; }
     /**
      * Returns a value or fraction token, where possible, promoted to a fraction
      * with **signed improper** fraction parts, i.e. whole number is zero,
@@ -138,9 +127,9 @@ public:
 /**
  * Abstract class (interface) representing operators with precedence.
  */
-class ITokenOp : public TToken {
+class ITokenOp : public IToken {
 public:
-    ITokenOp(eTokenType type) : TToken(type) { }
+    /** Returns the operator precedence. */
     virtual int op() = 0;
 };
 
@@ -162,8 +151,7 @@ public:
      * @param action Action for this operator.
      * @param iBrktOff Current bracket offset.
      */
-    TTokenBinaryOp(eBinaryOpAction action, int iBrktOff)
-        : ITokenOp(eTokenType::TOKEN_BINARYOP),
+    TTokenBinaryOp(eBinaryOpAction action, int iBrktOff) :
         m_action(action),
         m_asPercent(false),
         m_asTax(false)
@@ -172,7 +160,7 @@ public:
             + (m_asTax || m_asPercent ? OP_PERCENTOFFSET : 0)
             + iBrktOff * OP_BRACKETOFFSET;
     }
-    ~TTokenBinaryOp() { }
+    eTokenType type() { return eTokenType::TOKEN_BINARYOP; }
     /** Sets this operator's precedence, including the bracket offset. */
     void setPrecedence(int iBrktOff);
     /** Returns this operator's precedence. */
@@ -181,7 +169,7 @@ public:
      * Evaluate the action on the arguments, returning a newly created token
      * that represents the result of the oporation.
      */
-    TToken* evaluate(TToken* dArg1, TToken* dArg2);
+    ITokenResultBase* evaluate(ITokenResultBase* dArg1, ITokenResultBase* dArg2);
 
     std::string toString();
 };
@@ -196,17 +184,17 @@ private:
     /** Operator precedence. */
     int m_op;
 public:
-    TTokenUnaryOp(eUnaryOpAction action, int iBrktOff)
-        : ITokenOp(eTokenType::TOKEN_UNARYOP) {
+    TTokenUnaryOp(eUnaryOpAction action, int iBrktOff) {
         m_action = action;
         // Operator precedence just below the next bracket offset.
         m_op = iBrktOff * OP_BRACKETOFFSET
              + (OP_BRACKETOFFSET - 1);
     }
+    eTokenType type() { return eTokenType::TOKEN_UNARYOP; }
     /** Returns this operator's precedence. */
     int op() { return m_op; }
     /** Evaluate the action on the given argument. */
-    TToken* evaluate(TToken* pArg);
+    ITokenResultBase* evaluate(ITokenResultBase* pArg);
 
     std::string toString() {
         return std::string(
@@ -234,17 +222,17 @@ public:
     /** 
      * Initializes a new instance of the TTokenPostUnaryOp class.
      */
-    TTokenPostUnaryOp(ePostUnaryOpAction action, int iBrktOff)
-        : ITokenOp(eTokenType::TOKEN_POSTUNARYOP) {
+    TTokenPostUnaryOp(ePostUnaryOpAction action, int iBrktOff) {
         m_action = action;
         m_op = iBrktOff * OP_BRACKETOFFSET;
     }
+    eTokenType type() { return eTokenType::TOKEN_POSTUNARYOP; }
     int op() { return m_op; }
     /**
      * Evaluate the action on the given argument, returning a newly created
      * token that represents the result of the operation.
      */
-    TToken* evaluate(TToken* pArg);
+    ITokenResultBase* evaluate(ITokenResultBase* pArg);
 
     std::string toString() {
         return m_action == ePostUnaryOpAction::POST_UNARY_OP_POW2 ? "^2"

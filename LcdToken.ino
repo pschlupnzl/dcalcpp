@@ -33,14 +33,14 @@
 //   /**
 //   * Initialize a new instance of the LcdToken class with the given token.
 //   */
-//   LcdToken(TScan* src, Adafruit_ST7789 &lcd, int16_t cx, int16_t cy, uint16_t &out_tw);
+//   LcdToken(IScan* src, Adafruit_ST7789 &lcd, int16_t cx, int16_t cy, uint16_t &out_tw);
 //   /** Releases resources allocated by the token. */
 //   ~LcdToken();
 //   /** Draw the token. */
 //   void print(Adafruit_ST7789 &lcd, int16_t cx, int16_t cy);
 // };
 
-// LcdToken::LcdToken(TScan* src, Adafruit_ST7789 &lcd, int16_t cx, int16_t cy, uint16_t &out_tw) {
+// LcdToken::LcdToken(IScan* src, Adafruit_ST7789 &lcd, int16_t cx, int16_t cy, uint16_t &out_tw) {
 //   std::string str = src->toString();
 //   char * cstr = new char [str.length()+1];
 //   std::strcpy (cstr, str.c_str());

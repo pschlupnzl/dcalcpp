@@ -116,7 +116,7 @@ public:
     m_vdenom = vdenom;
   }
 
-  void getBounds(TScan* scan, int16_t cx, int16_t cy, int16_t* out_tw) {
+  void getBounds(IScan* scan, int16_t cx, int16_t cy, int16_t* out_tw) {
     int whole, num, denom;
     bool negative;
     m_rects.clear();
@@ -130,7 +130,7 @@ public:
     }
   }
 
-  void getBounds(TToken* token, int16_t cx, int16_t cy) {
+  void getBounds(IToken* token, int16_t cx, int16_t cy) {
     int whole, num, denom;
     bool negative;
     m_rects.clear();

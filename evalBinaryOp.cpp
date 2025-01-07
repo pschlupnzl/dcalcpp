@@ -13,12 +13,12 @@
  * @param pdenom (Output) Reference to denominator, filled on exit.
  * @param negative (Output) Reference to negative flag, filled on exit.
  */
-bool asSignedFraction(TToken* pArg, int* pnum, int *pdenom, bool *pneg) {
+bool asSignedFraction(ITokenResultBase* pArg, int* pnum, int *pdenom, bool *pneg) {
     if (pArg->type() == TOKEN_FRACTION) {
         return ((TTokenFraction*)pArg)->toSignedFraction(pnum, pdenom, pneg);
     }
     
-    double value =((TTokenResultBase*)pArg)->value();
+    double value = pArg->value();
     int ivalue = (int) round(value);
     if (abs(value - ivalue) < EPS) {
         // Return whole number as fraction.
@@ -32,13 +32,16 @@ bool asSignedFraction(TToken* pArg, int* pnum, int *pdenom, bool *pneg) {
     return false;
 }
 
-TToken* TTokenBinaryOp::evaluate(TToken* pArg1, TToken* pArg2) {
+ITokenResultBase* TTokenBinaryOp::evaluate(
+    ITokenResultBase* pArg1,
+    ITokenResultBase* pArg2
+) {
     eTokenType type1 = pArg1->type();
     eTokenType type2 = pArg2->type();
 
     /** Numerical arguments for unary or binary operators. */
-    double dArg1 = ((TTokenResultBase*)pArg1)->value();
-    double dArg2 = ((TTokenResultBase*)pArg2)->value();
+    double dArg1 = pArg1->value();
+    double dArg2 = pArg2->value();
 
     int iNum1 = 0, iNum2 = 0, iNum = 0;
     int iDenom1 = 1, iDenom2 = 1, iDenom = 0;

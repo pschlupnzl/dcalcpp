@@ -18,52 +18,54 @@ void CCalculate::reset_actions() {
 
 void CCalculate::reset_scan() {
     while (m_scan.size() > 0) {
-        TScan* scan = m_scan.back();
+        IScan* scan = m_scan.back();
         m_scan.pop_back();
-        switch (scan->type()) {
-            case eScanType::SCAN_NUMBER:
-                delete (TScanNumber*) scan;
-                break;
-            case eScanType::SCAN_BINARYOP:
-                delete (TScanBinaryOp*) scan;
-                break;
-            case eScanType::SCAN_UNARYOP:
-                delete (TScanUnaryOp*) scan;
-                break;
-            case eScanType::SCAN_POSTUNARYOP:
-                delete (TScanPostUnaryOp*) scan;
-                break;
-            case eScanType::SCAN_OPEN:
-                delete (TScanOpen*) scan;
-                break;
-            case eScanType::SCAN_CLOSE:
-                delete (TScanClose*) scan;
-                break;
-        }
+        delete scan;
+        // switch (scan->type()) {
+        //     case eScanType::SCAN_NUMBER:
+        //         delete (TScanNumber*) scan;
+        //         break;
+        //     case eScanType::SCAN_BINARYOP:
+        //         delete (TScanBinaryOp*) scan;
+        //         break;
+        //     case eScanType::SCAN_UNARYOP:
+        //         delete (TScanUnaryOp*) scan;
+        //         break;
+        //     case eScanType::SCAN_POSTUNARYOP:
+        //         delete (TScanPostUnaryOp*) scan;
+        //         break;
+        //     case eScanType::SCAN_OPEN:
+        //         delete (TScanOpen*) scan;
+        //         break;
+        //     case eScanType::SCAN_CLOSE:
+        //         delete (TScanClose*) scan;
+        //         break;
+        // }
     }
 }
 
 void CCalculate::reset_pvoEquation() {
     while (m_pvoEquation.size() > 0) {
-        TToken* token = m_pvoEquation.back();
+        IToken* token = m_pvoEquation.back();
         m_pvoEquation.pop_back();
-        switch (token->type()) {
-            case eTokenType::TOKEN_VALUE:
-                delete (TTokenValue*) token;
-                break;
-            case eTokenType::TOKEN_FRACTION:
-                delete (TTokenFraction*) token;
-                break;
-            case eTokenType::TOKEN_BINARYOP:
-                delete (TTokenBinaryOp*) token;
-                break;
-            case eTokenType::TOKEN_UNARYOP:
-                delete (TTokenUnaryOp*) token;
-                break;
-            case eTokenType::TOKEN_POSTUNARYOP:
-                delete (TTokenPostUnaryOp*) token;
-                break;
-        }
+        delete token;
+        // switch (token->type()) {
+        //     case eTokenType::TOKEN_VALUE:
+        //         delete (TTokenValue*) token;
+        //         break;
+        //     case eTokenType::TOKEN_FRACTION:
+        //         delete (TTokenFraction*) token;
+        //         break;
+        //     case eTokenType::TOKEN_BINARYOP:
+        //         delete (TTokenBinaryOp*) token;
+        //         break;
+        //     case eTokenType::TOKEN_UNARYOP:
+        //         delete (TTokenUnaryOp*) token;
+        //         break;
+        //     case eTokenType::TOKEN_POSTUNARYOP:
+        //         delete (TTokenPostUnaryOp*) token;
+        //         break;
+        // }
     }
 }
 
@@ -81,13 +83,13 @@ std::string CCalculate::toString()
 {
     std::string str;
     str += "Scan:\n ";
-    for (TScan* scan : m_scan) {
+    for (IScan* scan : m_scan) {
         str += "‹" + scan->toString() + "› ";
     }
     str += "\n";
 
     str += "Tokens:\n ";
-    for (TToken* tok : m_pvoEquation) {
+    for (IToken* tok : m_pvoEquation) {
         str += "«" + tok->toString() + "» ";
     }
     str += "\n";
@@ -99,9 +101,9 @@ std::string CCalculate::toString()
     return str;
 }
 
-void CCalculate::forEach(const std::function<void(TScan *)> fn)
+void CCalculate::forEach(const std::function<void(IScan *)> fn)
 {
-    for (TScan* scan : m_scan) {
+    for (IScan* scan : m_scan) {
         fn(scan);
     }
 }

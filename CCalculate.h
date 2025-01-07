@@ -53,11 +53,11 @@ private:
     /** Keys entered, used for backspace. */
     std::vector<eAction> m_actions;
     /** Parsed tokens in the order entered by the user. */
-    std::vector<TScan*> m_scan;
+    std::vector<IScan*> m_scan;
     /** Tokens parsed into RPN representation. */
-    std::vector<TToken*> m_pvoEquation;
+    std::vector<IToken*> m_pvoEquation;
     /** Final result, or `nullptr` if no solution to be had. */
-    TToken* m_presult = nullptr;
+    ITokenResultBase* m_presult = nullptr;
     /** Location of last error, when parsing. */
     size_t m_lastErrorLocation = 0;
     /** Last error that happened. */
@@ -114,13 +114,13 @@ public:
      * Iterate over the scanned tokens, used e.g. to display the read equation.
      * @param fn Delegate that is called with each token.
      */
-    // void forEach(void f(TScan* scan));
-    void forEach(const std::function<void(TScan*)> fn);
+    // void forEach(void f(IScan* scan));
+    void forEach(const std::function<void(IScan*)> fn);
 
     /** Returns a string representation of the entire calculation. */
     std::string toString();
     /** Returns a reference to the result token, or nullptr if not solved. */
-    TToken* result() {
+    ITokenResultBase* result() const {
       return m_presult;
     }
 };

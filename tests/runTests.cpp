@@ -908,7 +908,7 @@ void runTestCases(const std::vector<testCase_t> &cases, int& pass) {
 
         testCalc.parseEquation();
         testCalc.evalEquation(options);
-        TToken* result = testCalc.result();
+        ITokenResultBase* result = testCalc.result();
         bool success =
             (result != nullptr && result->toString() == expect) ||
             (result == nullptr && expect == "");

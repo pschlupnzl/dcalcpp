@@ -11,7 +11,7 @@ bool CCalculate::scan(eAction action) {
 }
 
 bool CCalculate::scanSilent(eAction action) {
-    TScan* last = m_scan.size() <= 0 
+    IScan* last = m_scan.size() <= 0 
         ? nullptr 
         : m_scan.back();
     eScanType type = last ? last->type() : eScanType::SCAN_UNDEFINED;
@@ -43,7 +43,11 @@ bool CCalculate::scanSilent(eAction action) {
         case eAction::ACTION_DIV:
         case eAction::ACTION_POW:
         case eAction::ACTION_ROOT:
-            if (type == eScanType::SCAN_NUMBER || type == eScanType::SCAN_CLOSE) {
+            if (
+                type == eScanType::SCAN_NUMBER || 
+                type == eScanType::SCAN_CLOSE ||
+                type == eScanType::SCAN_POSTUNARYOP
+            ) {
                 m_scan.push_back(new TScanBinaryOp(
                     action == eAction::ACTION_ADD ? eBinaryOpAction::BINARY_OP_ADD :
                     action == eAction::ACTION_MULT ? eBinaryOpAction::BINARY_OP_MULT :

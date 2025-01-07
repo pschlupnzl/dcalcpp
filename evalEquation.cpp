@@ -14,18 +14,18 @@ void CCalculate::evalEquation(const ICalcOptions &options) {
     }
 
     /** RPN stack of values being calculated. */
-    std::vector<TToken*> dsVals;
+    std::vector<ITokenResultBase*> dsVals;
     /** Generic arguments for binary or unary operators. */
-    TToken *pArg1, *pArg2;
+    ITokenResultBase *pArg1, *pArg2;
 
     // Iterate each token.
     for (size_t iThisPt = 0; iThisPt < n; iThisPt++) {
         int dsValsSize = dsVals.size();
-        TToken* pvoThisValop = m_pvoEquation[iThisPt];
+        IToken* pvoThisValop = m_pvoEquation[iThisPt];
         switch (pvoThisValop->type()) {
             case eTokenType::TOKEN_VALUE:
             case eTokenType::TOKEN_FRACTION:
-                dsVals.push_back(pvoThisValop);
+                dsVals.push_back((ITokenResultBase*)pvoThisValop);
                 break;
 
 
@@ -79,7 +79,3 @@ void CCalculate::evalEquation(const ICalcOptions &options) {
         ((TTokenFraction*)m_presult)->simplify();
     }
 }
-
-// void CCalculate::forEach(void f(const TScan *scan))
-// {
-// }

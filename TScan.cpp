@@ -82,7 +82,7 @@ void TScanNumber::append(eAction action)
     }
 }
 
-TToken *TScanNumber::toToken()
+ITokenResultBase *TScanNumber::toToken()
 {
     int whole, num, denom;
     bool negative;

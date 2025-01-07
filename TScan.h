@@ -6,23 +6,18 @@
 #include "eScanType.h"
 #include "TToken.h"
 
-class TScan {
-protected:
-    eScanType m_type;
+class IScan {
+// protected:
+//     eScanType m_type;
 public:
-    TScan(eScanType type) {
-        m_type = type;
-    }
-    virtual ~TScan() { }
     /** Returns the type of this scanned token. */
-    eScanType type() { return m_type; }
-    virtual std::string toString() {
-        return std::string("Scan:") + std::to_string(m_type);
-    }
+    virtual eScanType type() = 0;
+    /** Returns a string representation of this token. */
+    virtual std::string toString() = 0;
 };
 
 /** A scanned type number. */
-class TScanNumber : public TScan {
+class TScanNumber : public IScan {
 private:
     /** Characters representing string being entered. */
     std::string m_tok;
@@ -33,12 +28,12 @@ private:
     /** Number of fraction parts, i.e. count of '_' characters in m_tok. */
     int m_fractionParts;
 public:
-    TScanNumber() : TScan(eScanType::SCAN_NUMBER) {
+    TScanNumber() {
         m_negative = false;
         m_hasDecimal = false;
         m_fractionParts = 0;
     };
-    ~TScanNumber() { }
+    eScanType type() { return eScanType::SCAN_NUMBER; }
     /** Append a character, including `.` decimal and `_` fraction. */
     void append(eAction action);
     /**
@@ -50,18 +45,18 @@ public:
      * Instantiates a new TTokenValue or TTokenFracton that represents the 
      * current string value.
      */
-    TToken* toToken();
+    ITokenResultBase* toToken();
     std::string toString();
 };
 
-class TScanBinaryOp : public TScan {
+class TScanBinaryOp : public IScan {
 private:
     eBinaryOpAction m_action;
 public:
-    TScanBinaryOp(eBinaryOpAction action) : TScan(eScanType::SCAN_BINARYOP) {
+    TScanBinaryOp(eBinaryOpAction action) {
         m_action = action;
     }
-    ~TScanBinaryOp() { }
+    eScanType type() { return eScanType::SCAN_BINARYOP; }
     /**
      * Instantiates a new TtokenBinaryOp representing the current operation.
      * @param iBrktOff Current bracket offset for operator precedence.
@@ -82,14 +77,14 @@ public:
     }
 };
 
-class TScanUnaryOp : public TScan {
+class TScanUnaryOp : public IScan {
 private:
     eUnaryOpAction m_action;
 public:
-    TScanUnaryOp(eUnaryOpAction action)
-        : TScan(eScanType::SCAN_UNARYOP) {
+    TScanUnaryOp(eUnaryOpAction action) {
         m_action = action;
     }
+    eScanType type() { return eScanType::SCAN_UNARYOP; }
     TTokenUnaryOp* toToken(int iBrktOff) {
         return new TTokenUnaryOp(m_action, iBrktOff);
     }
@@ -106,14 +101,14 @@ public:
     }
 };
 
-class TScanPostUnaryOp : public TScan {
+class TScanPostUnaryOp : public IScan {
 private:
     ePostUnaryOpAction m_action;
 public:
-    TScanPostUnaryOp(ePostUnaryOpAction action)
-        : TScan(eScanType::SCAN_POSTUNARYOP) {
+    TScanPostUnaryOp(ePostUnaryOpAction action) {
         m_action = action;
     };
+    eScanType type() { return eScanType::SCAN_POSTUNARYOP; }
     TTokenPostUnaryOp* toToken(int iBrktOff) {
         return new TTokenPostUnaryOp(m_action, iBrktOff);
     }
@@ -124,17 +119,15 @@ public:
     }
 };
 
-class TScanOpen : public TScan {
+class TScanOpen : public IScan {
 public:
-    TScanOpen() : TScan(eScanType::SCAN_OPEN) { };
-    ~TScanOpen() { }
+    eScanType type() { return eScanType::SCAN_OPEN; }
     std::string toString() { return "("; }
 };
 
-class TScanClose : public TScan {
+class TScanClose : public IScan {
 public:
-    TScanClose() : TScan(eScanType::SCAN_CLOSE) { };
-    ~TScanClose() { }
+    eScanType type() { return eScanType::SCAN_CLOSE; }
     std::string toString() { return ")"; }
 };
 
