@@ -30,20 +30,20 @@
 //   action == eBinaryOpAction::BINARY_OP_POW ? 10 : \
 //   0)
 
-/** 
- * Unary operator precedence (they're in order anyway). These are higher than
- * binary op precedence.
- */
-#define UNARY_OP_PRECEDENCE (action) = ( \
-  action == UNARY_OP_ACTION_SQRT ? : 20 \
-  action == UNARY_OP_ACTION_SQRT3 ? : 21 \
-  action == UNARY_OP_ACTION_SIN ? : 22 \
-  action == UNARY_OP_ACTION_COS ? : 23 \
-  action == UNARY_OP_ACTION_TAN ? : 24 \
-  action == UNARY_OP_ACTION_ASIN ? : 25 \
-  action == UNARY_OP_ACTION_ACOS ? : 26 \
-  action == UNARY_OP_ACTION_ATAN ? : 27 \
-  20)
+// /** 
+//  * Unary operator precedence (they're in order anyway). These are higher than
+//  * binary op precedence.
+//  */
+// #define UNARY_OP_PRECEDENCE (action) = ( \
+//   action == UNARY_OP_ACTION_SQRT ? : 20 \
+//   action == UNARY_OP_ACTION_SQRT3 ? : 21 \
+//   action == UNARY_OP_ACTION_SIN ? : 22 \
+//   action == UNARY_OP_ACTION_COS ? : 23 \
+//   action == UNARY_OP_ACTION_TAN ? : 24 \
+//   action == UNARY_OP_ACTION_ASIN ? : 25 \
+//   action == UNARY_OP_ACTION_ACOS ? : 26 \
+//   action == UNARY_OP_ACTION_ATAN ? : 27 \
+//   20)
 
 /**
  * Class to evaluate an equation to find the answer.

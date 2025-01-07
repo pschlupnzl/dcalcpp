@@ -96,6 +96,12 @@ public:
     std::string toString() {
         return std::string(
             m_action == eUnaryOpAction::UNARY_OP_SQRT ? "2v" :
+            m_action == eUnaryOpAction::UNARY_OP_SIN ? "sin" :
+            m_action == eUnaryOpAction::UNARY_OP_COS ? "cos" :
+            m_action == eUnaryOpAction::UNARY_OP_TAN ? "tan" :
+            m_action == eUnaryOpAction::UNARY_OP_ASIN ? "asin" :
+            m_action == eUnaryOpAction::UNARY_OP_ACOS ? "acos" :
+            m_action == eUnaryOpAction::UNARY_OP_ATAN ? "atan" :
             "?");
     }
 };
@@ -108,8 +114,8 @@ public:
         : TScan(eScanType::SCAN_POSTUNARYOP) {
         m_action = action;
     };
-    TTokenPostUnaryOp* toToken() {
-        return new TTokenPostUnaryOp(m_action);
+    TTokenPostUnaryOp* toToken(int iBrktOff) {
+        return new TTokenPostUnaryOp(m_action, iBrktOff);
     }
     std::string toString() {
         return std::string(

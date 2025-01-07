@@ -1,4 +1,4 @@
-#include <cmath>
+#include <math.h>
 #include "TToken.h"
 #include "types.h"
 
@@ -19,8 +19,8 @@ bool asSignedFraction(TToken* pArg, int* pnum, int *pdenom, bool *pneg) {
     }
     
     double value =((TTokenResultBase*)pArg)->value();
-    int ivalue = (int) std::round(value);
-    if (std::abs(value - ivalue) < EPS) {
+    int ivalue = (int) round(value);
+    if (abs(value - ivalue) < EPS) {
         // Return whole number as fraction.
         *pnum = ivalue;
         *pdenom = 1;
@@ -97,11 +97,11 @@ TToken* TTokenBinaryOp::evaluate(TToken* pArg1, TToken* pArg2) {
             break;
 
         case eBinaryOpAction::BINARY_OP_POW:
-            dVal = std::pow(dArg1, dArg2);
+            dVal = pow(dArg1, dArg2);
             break;
 
         case eBinaryOpAction::BINARY_OP_ROOT:
-            dVal = std::pow(dArg2, 1.00 / dArg1);
+            dVal = pow(dArg2, 1.00 / dArg1);
             break;
     }
 

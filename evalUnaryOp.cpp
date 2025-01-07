@@ -1,10 +1,16 @@
 #include <math.h>
-#include <cmath>
 #include "TToken.h"
 #include "types.h"
 
+/** Conversion from degrees to radians. */
+#define M_PI_180 (M_PI / 180.00)
+
 TToken* TTokenUnaryOp::evaluate(TToken *pArg)
 {
+    /** Multiplier for arguments to math.h trig functions in radians. */
+    // double trigToRad = 1.00; // M_PI_180
+    double trigToRad = M_PI_180;
+
     eTokenType type = pArg->type();
     double dVal = ((TTokenResultBase*)pArg)->value();
 
@@ -28,8 +34,8 @@ TToken* TTokenUnaryOp::evaluate(TToken *pArg)
             if (asFraction) {
                 dnum = sqrt((double)num);
                 ddenom = sqrt((double)denom);
-                if (std::abs(dnum - std::round(dnum)) < EPS &&
-                    std::abs(ddenom - std::round(ddenom)) < EPS) {
+                if (abs(dnum - round(dnum)) < EPS &&
+                    abs(ddenom - round(ddenom)) < EPS) {
                     num = (int) dnum;
                     denom = (int) ddenom;
                     isFraction = true;
@@ -37,6 +43,24 @@ TToken* TTokenUnaryOp::evaluate(TToken *pArg)
             }
             break;
 
+        case eUnaryOpAction::UNARY_OP_SIN:
+            dVal = sin(trigToRad * dVal);
+            break;
+        case eUnaryOpAction::UNARY_OP_COS:
+            dVal = cos(trigToRad * dVal);
+            break;
+        case eUnaryOpAction::UNARY_OP_TAN:
+            dVal = tan(trigToRad * dVal);
+            break;
+        case eUnaryOpAction::UNARY_OP_ASIN:
+            dVal = asin(trigToRad * dVal);
+            break;
+        case eUnaryOpAction::UNARY_OP_ACOS:
+            dVal = acos(trigToRad * dVal);
+            break;
+        case eUnaryOpAction::UNARY_OP_ATAN:
+            dVal = atan(trigToRad * dVal);
+            break;
     }
 
     if (isFraction) {

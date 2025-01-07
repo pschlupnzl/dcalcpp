@@ -35,13 +35,13 @@ enum eAction {
     ACTION_SQRT,
     ACTION_POW2,
     ACTION_POW,
-    // // Trigonometry.
-    // ACTION_SIN,
-    // ACTION_COS,
-    // ACTION_TAN,
-    // ACTION_ASIN,
-    // ACTION_ACOS,
-    // ACTION_ATAN,
+    // Trigonometry.
+    ACTION_SIN,
+    ACTION_COS,
+    ACTION_TAN,
+    ACTION_ASIN,
+    ACTION_ACOS,
+    ACTION_ATAN,
 
     // // // Extra functions
     // ACTION_POW3,      // cubed
@@ -109,6 +109,12 @@ enum ePostUnaryOpAction {
 enum eUnaryOpAction {
     UNARY_OP_ACTION = 300,
     UNARY_OP_SQRT,
+    UNARY_OP_SIN,
+    UNARY_OP_COS,
+    UNARY_OP_TAN,
+    UNARY_OP_ASIN,
+    UNARY_OP_ACOS,
+    UNARY_OP_ATAN,
 };
 
 #endif /* EACTION_H */

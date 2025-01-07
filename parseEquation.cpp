@@ -30,7 +30,7 @@ void processOps (
 }
 
 void processOps(
-    TTokenBinaryOp* iThisOp,
+    ITokenOp* iThisOp,
     std::vector<TToken*> &pvoEquation,
     std::vector<ITokenOp*> &isOps
 ) {
@@ -89,9 +89,10 @@ void CCalculate::parseEquation() {
                     isOps.push_back(binaryToken);
                     uLookFor = eLookFor::LOOKFOR_NUMBER;
                 } else if (scanType == eScanType::SCAN_POSTUNARYOP) {
-                    m_pvoEquation.push_back(
-                        ((TScanPostUnaryOp*)scan)->toToken()
-                    );
+                    TTokenPostUnaryOp* postUnaryToken =
+                        ((TScanPostUnaryOp*)scan)->toToken(iBrktOff);
+                    processOps(postUnaryToken, m_pvoEquation, isOps);
+                    isOps.push_back(postUnaryToken);
                 } else if (scanType == eScanType::SCAN_CLOSE) {
                     iBrktOff -= 1;
                     if (iBrktOff < 0) {

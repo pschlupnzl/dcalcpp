@@ -211,6 +211,12 @@ public:
     std::string toString() {
         return std::string(
             m_action == eUnaryOpAction::UNARY_OP_SQRT ? "2v" :
+            m_action == eUnaryOpAction::UNARY_OP_SIN ? "sin" :
+            m_action == eUnaryOpAction::UNARY_OP_COS ? "cos" :
+            m_action == eUnaryOpAction::UNARY_OP_TAN ? "tan" :
+            m_action == eUnaryOpAction::UNARY_OP_ASIN ? "asin" :
+            m_action == eUnaryOpAction::UNARY_OP_ACOS ? "acos" :
+            m_action == eUnaryOpAction::UNARY_OP_ATAN ? "atan" :
             "?");
     }
 };
@@ -219,17 +225,21 @@ public:
  * A token representing a post-value unary action such as x! (factorial) or x²
  * (squared).
  */
-class TTokenPostUnaryOp : public TToken {
+class TTokenPostUnaryOp : public ITokenOp {
 private:
     ePostUnaryOpAction m_action;
+    /** Operator precedence. */
+    int m_op;
 public:
     /** 
      * Initializes a new instance of the TTokenPostUnaryOp class.
      */
-    TTokenPostUnaryOp(ePostUnaryOpAction action)
-        : TToken(eTokenType::TOKEN_POSTUNARYOP) {
+    TTokenPostUnaryOp(ePostUnaryOpAction action, int iBrktOff)
+        : ITokenOp(eTokenType::TOKEN_POSTUNARYOP) {
         m_action = action;
+        m_op = iBrktOff * OP_BRACKETOFFSET;
     }
+    int op() { return m_op; }
     /**
      * Evaluate the action on the given argument, returning a newly created
      * token that represents the result of the operation.

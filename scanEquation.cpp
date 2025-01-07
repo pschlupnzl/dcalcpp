@@ -68,11 +68,23 @@ bool CCalculate::scanSilent(eAction action) {
             break;
 
         case eAction::ACTION_SQRT:
+        case eAction::ACTION_SIN:
+        case eAction::ACTION_COS:
+        case eAction::ACTION_TAN:
+        case eAction::ACTION_ASIN:
+        case eAction::ACTION_ACOS:
+        case eAction::ACTION_ATAN:
             if (!last ||
                 type == eScanType::SCAN_OPEN ||
                 type == eScanType::SCAN_BINARYOP) {
                 m_scan.push_back(new TScanUnaryOp(
                     action == eAction::ACTION_SQRT ? eUnaryOpAction::UNARY_OP_SQRT :
+                    action == eAction::ACTION_SIN ? eUnaryOpAction::UNARY_OP_SIN :
+                    action == eAction::ACTION_COS ? eUnaryOpAction::UNARY_OP_COS :
+                    action == eAction::ACTION_TAN ? eUnaryOpAction::UNARY_OP_TAN :
+                    action == eAction::ACTION_ASIN ? eUnaryOpAction::UNARY_OP_ASIN :
+                    action == eAction::ACTION_ACOS ? eUnaryOpAction::UNARY_OP_ACOS :
+                    action == eAction::ACTION_ATAN ? eUnaryOpAction::UNARY_OP_ATAN :
                     eUnaryOpAction::UNARY_OP_SQRT
                 ));
             } else {
