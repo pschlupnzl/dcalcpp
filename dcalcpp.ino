@@ -60,9 +60,6 @@ Adafruit_ST7789 lcd = Adafruit_ST7789(LCD_CS, LCD_DC, LCD_RST);
 String message = "DysCalculator++ screen /dev/ttyUSB0 115200";
 
 CCalculate ccalc;
-IEvalEquationOptions coptions = {
-    .trigRad = true
-};
 
 void setCursor(int16_t cx, int16_t cy) {
   lcd.setCursor(cx, cy);
@@ -150,7 +147,7 @@ void setup() {
       ccalc.scan(*pch);
   }
   ccalc.parseEquation();
-  ccalc.evalEquation(coptions);
+  ccalc.evalEquation();
 
   redraw(true);
 }
@@ -177,7 +174,7 @@ void loop() {
     } else {
       ccalc.scan(ch);
       ccalc.parseEquation();
-      ccalc.evalEquation(coptions);
+      ccalc.evalEquation();
       redraw(true);
     }
   }

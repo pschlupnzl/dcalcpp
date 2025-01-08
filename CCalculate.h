@@ -118,7 +118,7 @@ public:
     void forEach(const std::function<void(IScan*)> fn);
 
     /** Returns a string representation of the entire calculation. */
-    std::string toString();
+    std::string toString(const ICalcOptions& options);
     /** Returns a reference to the result token, or nullptr if not solved. */
     ITokenResultBase* result() const {
       return m_presult;

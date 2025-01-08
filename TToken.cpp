@@ -5,15 +5,10 @@
 #include "TToken.h"
 #include "types.h"
 
-/** Decimal separator. */
-const char DECIMAL = '.';
-/** Thousands separator. */
-const char THOU = ',';
-
 /** Size of buffer for displaying a TTokenValue string. */
 #define TTOKENVALUE_BUFFER_SIZE 32
 
-std::string TTokenValue::toString() {
+std::string TTokenValue::toString(const ICalcOptions &options) {
   // Format using C++ snprintf into a C string.
   // C++20 introduces std::format.
   // See also https://stackoverflow.com/a/21162120/13253316.
@@ -32,14 +27,17 @@ std::string TTokenValue::toString() {
     if (pos == decimal) {
       // Remove decimal at end.
       str.pop_back();
-    } else {
-      str[decimal] = DECIMAL;
+    } else if (options.deciSep != 0x00) {
+      // Substitute decimal character.
+      str[decimal] = options.deciSep;
     }
   }
 
-  int16_t thou = decimal == std::string::npos ? str.length() : decimal;
-  for (thou -= 3; thou >= 1; thou -= 3) {
-    str.insert(thou, std::string(1, THOU));
+  if (options.thouSep != 0x00) {
+    int16_t thou = decimal == std::string::npos ? str.length() : decimal;
+    for (thou -= 3; thou >= 1; thou -= 3) {
+      str.insert(thou, std::string(1, options.thouSep));
+    }
   }
 
   return str;
@@ -74,7 +72,7 @@ bool TTokenFraction::toFractionParts(int *pwhole, int *pnum, int *pdenom, bool *
     return true;
 }
 
-std::string TTokenFraction::toString()
+std::string TTokenFraction::toString(const ICalcOptions &options)
 {
     char buffer[TTOKENVALUE_BUFFER_SIZE];
     if (m_whole) {
@@ -85,7 +83,7 @@ std::string TTokenFraction::toString()
     return std::string(buffer);
 }
 
-std::string TTokenBinaryOp::toString() {
+std::string TTokenBinaryOp::toString(const ICalcOptions &options) {
     std::string str = std::string(
         m_action == eBinaryOpAction::BINARY_OP_ADD ? "+" :
         m_action == eBinaryOpAction::BINARY_OP_MULT ? "x" :

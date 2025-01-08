@@ -29,6 +29,14 @@ private:
   getTextBounds_t* m_getTextBounds;
   drawRect_t* m_drawRect;
   print_t* m_print;
+
+  /** Options for handling calculations and display. */
+  ICalcOptions m_options = {
+    .trigRad = false,
+    .deciSep = 0x00,
+    .thouSep = 0x00,
+  };
+
   std::vector<LcdRect_t> m_rects;
   /** Horizontal pad between digits in a number. */
   int16_t m_hpad;
@@ -126,7 +134,7 @@ public:
     ) {
       *out_tw = addFraction(whole, num, denom, negative, cx, cy);
     } else {
-      *out_tw = addString(scan->toString(), cx, cy, 0);
+      *out_tw = addString(scan->toString(m_options), cx, cy, 0);
     }
   }
 
@@ -140,7 +148,7 @@ public:
     ) {
       addFraction(whole, num, denom, negative, cy, cy);
     } else {
-      addString(token->toString(), cx, cy);
+      addString(token->toString(m_options), cx, cy);
     }
   }
 

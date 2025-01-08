@@ -185,7 +185,7 @@ int main(int argc, char **argv) {
 
     calc.parseEquation();
     calc.evalEquation(options);
-    std::cout << calc.toString() << std::endl;
+    std::cout << calc.toString(options) << std::endl;
 
 
     // std::cout << "C++ version: " << __cplusplus << std::endl;

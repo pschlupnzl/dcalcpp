@@ -97,7 +97,7 @@ ITokenResultBase *TScanNumber::toToken()
     return new TTokenValue(val);
 }
 
-std::string TScanNumber::toString()
+std::string TScanNumber::toString(const ICalcOptions& options)
 {
     int whole, num, denom;
     bool negative;

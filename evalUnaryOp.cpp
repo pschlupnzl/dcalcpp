@@ -53,13 +53,13 @@ ITokenResultBase* TTokenUnaryOp::evaluate(ITokenResultBase *pArg)
             dVal = tan(trigToRad * dVal);
             break;
         case eUnaryOpAction::UNARY_OP_ASIN:
-            dVal = asin(trigToRad * dVal);
+            dVal = asin(dVal) / trigToRad;
             break;
         case eUnaryOpAction::UNARY_OP_ACOS:
-            dVal = acos(trigToRad * dVal);
+            dVal = acos(dVal) / trigToRad;
             break;
         case eUnaryOpAction::UNARY_OP_ATAN:
-            dVal = atan(trigToRad * dVal);
+            dVal = atan(dVal) / trigToRad;
             break;
     }
 

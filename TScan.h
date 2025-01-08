@@ -13,7 +13,7 @@ public:
     /** Returns the type of this scanned token. */
     virtual eScanType type() = 0;
     /** Returns a string representation of this token. */
-    virtual std::string toString() = 0;
+    virtual std::string toString(const ICalcOptions& options) = 0;
 };
 
 /** A scanned type number. */
@@ -46,7 +46,7 @@ public:
      * current string value.
      */
     ITokenResultBase* toToken();
-    std::string toString();
+    std::string toString(const ICalcOptions& options);
 };
 
 class TScanBinaryOp : public IScan {
@@ -64,7 +64,7 @@ public:
     TTokenBinaryOp* toToken(int iBrktOff) {
         return new TTokenBinaryOp(m_action, iBrktOff);
     }
-    std::string toString() {
+    std::string toString(const ICalcOptions& options) {
         return std::string(
           m_action == eBinaryOpAction::BINARY_OP_ADD ? "+" :
           m_action == eBinaryOpAction::BINARY_OP_MULT ? "x" :
@@ -88,7 +88,7 @@ public:
     TTokenUnaryOp* toToken(int iBrktOff) {
         return new TTokenUnaryOp(m_action, iBrktOff);
     }
-    std::string toString() {
+    std::string toString(const ICalcOptions& options) {
         return std::string(
             m_action == eUnaryOpAction::UNARY_OP_SQRT ? "2v" :
             m_action == eUnaryOpAction::UNARY_OP_SIN ? "sin" :
@@ -112,7 +112,7 @@ public:
     TTokenPostUnaryOp* toToken(int iBrktOff) {
         return new TTokenPostUnaryOp(m_action, iBrktOff);
     }
-    std::string toString() {
+    std::string toString(const ICalcOptions& options) {
         return std::string(
             m_action == ePostUnaryOpAction::POST_UNARY_OP_POW2 ? "^2" :
             "?");
@@ -122,13 +122,13 @@ public:
 class TScanOpen : public IScan {
 public:
     eScanType type() { return eScanType::SCAN_OPEN; }
-    std::string toString() { return "("; }
+    std::string toString(const ICalcOptions& options) { return "("; }
 };
 
 class TScanClose : public IScan {
 public:
     eScanType type() { return eScanType::SCAN_CLOSE; }
-    std::string toString() { return ")"; }
+    std::string toString(const ICalcOptions& options) { return ")"; }
 };
 
 #endif /* TSCAN_H */

@@ -79,23 +79,23 @@ void CCalculate::reset_result() {
     }
 }
 
-std::string CCalculate::toString()
+std::string CCalculate::toString(const ICalcOptions &options)
 {
     std::string str;
     str += "Scan:\n ";
     for (IScan* scan : m_scan) {
-        str += "‹" + scan->toString() + "› ";
+        str += "‹" + scan->toString(options) + "› ";
     }
     str += "\n";
 
     str += "Tokens:\n ";
     for (IToken* tok : m_pvoEquation) {
-        str += "«" + tok->toString() + "» ";
+        str += "«" + tok->toString(options) + "» ";
     }
     str += "\n";
 
     if (m_presult != nullptr) {
-        str += "= " + m_presult->toString() + "\n";
+        str += "= " + m_presult->toString(options) + "\n";
     }
 
     return str;

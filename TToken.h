@@ -33,7 +33,7 @@ public:
     /** Returns the type of entity represented by this token. */
     virtual eTokenType type() = 0;
     /** Returns a string representation of the token. */
-    virtual std::string toString() = 0;
+    virtual std::string toString(const ICalcOptions &options) = 0;
 };
 
 /**
@@ -70,7 +70,7 @@ public:
     }
     eTokenType type() { return eTokenType::TOKEN_VALUE; }
     double value() { return m_value; }
-    std::string toString();
+    std::string toString(const ICalcOptions &options);
 };
 
 class TTokenFraction : public ITokenResultBase {
@@ -121,7 +121,7 @@ public:
     bool toFractionParts(int* pwhole, int* pnum, int* pdenom, bool* pneg);
     /** Simplifies the fraction. */
     void simplify();
-    std::string toString();
+    std::string toString(const ICalcOptions &options);
 };
 
 /**
@@ -171,7 +171,7 @@ public:
      */
     ITokenResultBase* evaluate(ITokenResultBase* dArg1, ITokenResultBase* dArg2);
 
-    std::string toString();
+    std::string toString(const ICalcOptions &options);
 };
 
 /**
@@ -196,7 +196,7 @@ public:
     /** Evaluate the action on the given argument. */
     ITokenResultBase* evaluate(ITokenResultBase* pArg);
 
-    std::string toString() {
+    std::string toString(const ICalcOptions &options) {
         return std::string(
             m_action == eUnaryOpAction::UNARY_OP_SQRT ? "2v" :
             m_action == eUnaryOpAction::UNARY_OP_SIN ? "sin" :
@@ -234,7 +234,7 @@ public:
      */
     ITokenResultBase* evaluate(ITokenResultBase* pArg);
 
-    std::string toString() {
+    std::string toString(const ICalcOptions &options) {
         return m_action == ePostUnaryOpAction::POST_UNARY_OP_POW2 ? "^2"
         : "??";
     }
