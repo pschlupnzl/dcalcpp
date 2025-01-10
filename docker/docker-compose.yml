@@ -1,0 +1,12 @@
+
+services:
+  dcalcpp:
+    container_name: dcalcpp
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: dcalpp:latest
+    volumes:
+      - .:/app
+    entrypoint: platformio home
+    

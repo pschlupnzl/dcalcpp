@@ -1,5 +1,6 @@
 # Use the official Ubuntu image as the base image
-FROM ubuntu:latest
+# FROM ubuntu:latest
+FROM debian:bookworm-slim
 
 # Set the working directory in the container
 WORKDIR /app
@@ -15,15 +16,15 @@ RUN apt-get update && apt-get install -y \
     # (not needed for hardware builds)
     libncurses5-dev
 
-# Platformio
-RUN apt-get install -y \
-    curl \
-    python3-venv \
-    python3-pip
-RUN curl -fsSL -o get-platformio.py https://raw.githubusercontent.com/platformio/platformio-core-installer/master/get-platformio.py
-RUN python3 get-platformio.py
-RUN export PATH=$PATH:/root/.platformio/penv/bin/
-# RUN platformio home
+# # Platformio
+# RUN apt-get install -y \
+#     curl \
+#     python3-venv \
+#     python3-pip
+# RUN curl -fsSL -o get-platformio.py https://raw.githubusercontent.com/platformio/platformio-core-installer/master/get-platformio.py
+# RUN python3 get-platformio.py
+# RUN export PATH=$PATH:/root/.platformio/penv/bin/
+# # RUN platformio home
 
 # # Copy the source code into the container
 # COPY ok_api.cpp .

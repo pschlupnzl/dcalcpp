@@ -1,0 +1,36 @@
+---
+services:
+  webtop:
+    image: lscr.io/linuxserver/webtop:latest
+    container_name: webtop
+    security_opt:
+      - seccomp:unconfined #optional
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Australia/Adelaide
+      - SUBFOLDER=/ #optional
+      - TITLE=Webtop #optional
+    volumes:
+      - ./config:/config
+      - /var/run/docker.sock:/var/run/docker.sock #optional
+      # - /dev/tty.usbserial-2130:/dev/ttyUSB0
+    ports:
+      - 3000:3000
+      - 3001:3001
+    # privileged: true
+    # devices:
+    #   - /dev/ttyUSB0:/dev/ttyUSB0 #optional
+    #   - /dev/tty.usbserial-2130:/dev/ttyUSB0 #optional
+    #   - /dev/tty.usbserial-2130
+    shm_size: "1gb" #optional
+    # restart: unless-stopped
+
+# NOTES
+# -----
+# Passing devices doesn't quite seem to work (at least on MacOS)
+# - Pass as volume
+# - Pass as device
+# - Use privileged: true (this is dangerous)
+# - Run elevated
+# sudo docker-compose -f webtop-compose.yml up

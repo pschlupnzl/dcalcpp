@@ -10,6 +10,7 @@ class IScan {
 // protected:
 //     eScanType m_type;
 public:
+    virtual ~IScan() = default;
     /** Returns the type of this scanned token. */
     virtual eScanType type() = 0;
     /** Returns a string representation of this token. */

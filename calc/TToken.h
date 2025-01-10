@@ -30,6 +30,7 @@
 
 class IToken {
 public:
+    virtual ~IToken() = default;
     /** Returns the type of entity represented by this token. */
     virtual eTokenType type() = 0;
     /** Returns a string representation of the token. */

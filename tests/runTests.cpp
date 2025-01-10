@@ -2,10 +2,10 @@
 #include <cstring>
 #include <tuple>
 #include <vector>
-#include "../CCalculate.h"
-#include "../TToken.h"
-#include "../eAction.h"
-#include "../types.h"
+#include "../calc/CCalculate.h"
+#include "../calc/TToken.h"
+#include "../calc/eAction.h"
+#include "../calc/types.h"
 #include "actionFromCmd.h"
 
 typedef std::tuple<const char*, const char*, const char*> testCase_t;

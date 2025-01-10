@@ -106,6 +106,8 @@ ITokenResultBase* TTokenBinaryOp::evaluate(
         case eBinaryOpAction::BINARY_OP_ROOT:
             dVal = pow(dArg2, 1.00 / dArg1);
             break;
+        
+        default: /* nop */ break;
     }
 
     if (isFraction) {

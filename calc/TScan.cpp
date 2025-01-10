@@ -79,6 +79,7 @@ void TScanNumber::append(eAction action)
         case eAction::ACTION_NUM7: m_tok += "7"; break;
         case eAction::ACTION_NUM8: m_tok += "8"; break;
         case eAction::ACTION_NUM9: m_tok += "9"; break;
+        default: /* nop */ break;
     }
 }
 
@@ -106,9 +107,9 @@ std::string TScanNumber::toString(const ICalcOptions& options)
     if (toFractionParts(&whole, &num, &denom, &negative)) {
         char buffer[32];
         if (whole == 0) {
-            snprintf(buffer, 32, "%s %i/%i", negative ? "-" : "", num, denom);
+            snprintf(buffer, 32, "%s%i_%i", negative ? "-" : "", num, denom);
         } else {
-            snprintf(buffer, 32, "%s %i_%i/%i", negative ? "-" : "", whole, num, denom);
+            snprintf(buffer, 32, "%s%i_%i_%i", negative ? "-" : "", whole, num, denom);
         }
         return prefix + std::string(buffer);
     }

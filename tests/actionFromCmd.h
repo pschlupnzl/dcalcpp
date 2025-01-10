@@ -2,7 +2,7 @@
 #define ACTIONFROMCMD_H
 
 #include <string>
-#include "../eAction.h"
+#include "../calc/eAction.h"
 
 /**
  * Convert a command string (such as "+" or "sqrt") into the corresponding

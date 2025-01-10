@@ -61,6 +61,8 @@ ITokenResultBase* TTokenUnaryOp::evaluate(ITokenResultBase *pArg)
         case eUnaryOpAction::UNARY_OP_ATAN:
             dVal = atan(dVal) / trigToRad;
             break;
+
+        default: /* nop */ break;
     }
 
     if (isFraction) {

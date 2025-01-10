@@ -26,6 +26,7 @@ ITokenResultBase* TTokenPostUnaryOp::evaluate(ITokenResultBase *pArg)
                 dVal = dVal * dVal;
             }
             break;
+        default: /* nop */ break;
     }
 
     if (isFraction) {
