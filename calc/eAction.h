@@ -117,4 +117,16 @@ enum eUnaryOpAction {
     UNARY_OP_ATAN,
 };
 
+enum eCommand {
+    CMD_UNDEFINED = 400,
+    CMD_QUIT,
+    CMD_AC,
+    CMD_DEL,
+
+    CMD_TRIGRAD,
+    CMD_DECISEP,
+    CMD_THOUSEP,
+    CMD_FIXEDDECIMALS,
+};
+
 #endif /* EACTION_H */

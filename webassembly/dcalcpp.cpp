@@ -48,39 +48,80 @@
 // }
 
 CCalculate calc;
-ICalcOptions options = {
-    .trigRad = true,
-    .deciSep = 0x00,
-    .thouSep = 0x00
-};
+ICalcOptions options;
 
+EMSCRIPTEN_KEEPALIVE void reset() {
+    calc.reset();
+    options = ICalcOptions({
+        .trigRad = true,
+        .deciSep = 0x00,
+        .thouSep = 0x00,
+        .fixedDecimals = 0,
+    });
+}
+
+EMSCRIPTEN_KEEPALIVE void handleCommand(
+    eCommand cmd,
+    CCalculate& calc,
+    ICalcOptions& options
+) {
+    switch (cmd) {
+        case eCommand::CMD_AC:
+            calc.reset();
+            break;
+        case eCommand::CMD_TRIGRAD:
+            options.trigRad = !options.trigRad;
+            break;
+        case eCommand::CMD_DECISEP:
+            options.deciSep = options.deciSep == 0x00 ? ',' : 0x00;
+            break;
+        case eCommand::CMD_THOUSEP:
+            options.thouSep = options.thouSep == 0x00 ? '\'' : 0x00;
+            break;
+        case eCommand::CMD_FIXEDDECIMALS:
+            options.fixedDecimals =
+                options.fixedDecimals < 1 ? 3 : options.fixedDecimals - 1;
+            break;
+        default: /* nop */ break;
+    }
+}
+
+/**
+ * Read a single command or action, appending the current calculator state.
+ */
+EXTERN EMSCRIPTEN_KEEPALIVE char* doScan(char ch) {
+    eCommand cmd = commandFromKeyboard(ch);
+    if (cmd != eCommand::CMD_UNDEFINED) {
+        handleCommand(cmd, calc, options);
+    } else {
+        calc.scan(actionFromKeyboard(ch));
+    }
+    calc.parseEquation();
+    calc.evalEquation(options);
+    char *buf = (char*) malloc(512);
+    snprintf(buf, 512, "%s", calc.toDisplayString(options).c_str());
+    return buf;
+}
+
+/**
+ * Read an entire string of commands or actions.
+ */
 EXTERN EMSCRIPTEN_KEEPALIVE char* doCalc(char* src) {
     // Invoke from JavaScript with result = Module.ccall('doCalc', 'string', ['string'], ['1+2*3'])
-    calc.reset();
+    reset();
     for (const char* pch = src; *pch; ++pch) {
-        calc.scan(actionFromKeyboard(*pch));
+        eCommand cmd = commandFromKeyboard(*pch);
+        if (cmd != eCommand::CMD_UNDEFINED) {
+            handleCommand(cmd, calc, options);
+        } else {
+            calc.scan(actionFromKeyboard(*pch));
+        }
     }
 
     calc.parseEquation();
     calc.evalEquation(options);
-
-
     char *buf = (char*) malloc(512);
-
-    // int len = 0;
-    // calc.forEach([&buf, &len](IScan *scan) {
-    //     std::string tok = scan->toString(options) + " ";
-    //     snprintf(buf + len, 512 - len, "%s ", tok.c_str());
-    //     len += tok.length();
-    // });
-
-    // // snprintf(buf, 512, "Calc: %s", calc.toString(options).c_str());
-    // snprintf(buf + len, 512 - len, 
-    //     "%s",
-    //     calc.result()->toString(options).c_str());
-
     snprintf(buf, 512, "%s", calc.toDisplayString(options).c_str());
-
     return buf;
 }
 

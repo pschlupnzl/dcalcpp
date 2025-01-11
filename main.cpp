@@ -39,7 +39,7 @@ ICalcOptions options = {
     .trigRad = true,
     .deciSep = 0x00,
     .thouSep = 0x00,
-    .fixedDecimals = -1,
+    .fixedDecimals = 0,
 };
 
 

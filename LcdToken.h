@@ -35,7 +35,7 @@ private:
     .trigRad = false,
     .deciSep = 0x00,
     .thouSep = 0x00,
-    .fixedDecimals = -1
+    .fixedDecimals = 0
   };
 
   std::vector<LcdRect_t> m_rects;

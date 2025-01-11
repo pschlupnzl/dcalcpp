@@ -4,5 +4,6 @@
 #include "eAction.h"
 
 eAction actionFromKeyboard(char ch);
+eCommand commandFromKeyboard(char ch);
 
 #endif /* KEYMAP_H */

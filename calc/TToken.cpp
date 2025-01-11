@@ -5,8 +5,6 @@
 #include "TToken.h"
 #include "types.h"
 
-#include <iostream>
-
 /** Size of buffer for displaying a TTokenValue string. */
 #define TTOKENVALUE_BUFFER_SIZE 32
 
@@ -16,9 +14,7 @@ std::string TTokenValue::toString(const ICalcOptions &options) {
   // See also https://stackoverflow.com/a/21162120/13253316.
   char buffer[TTOKENVALUE_BUFFER_SIZE];
 
-std::cout << "fixedDecimals=" << options.fixedDecimals << std::endl;
-
-  if (options.fixedDecimals >= 0 && options.fixedDecimals < 12) {
+  if (options.fixedDecimals > 0 && options.fixedDecimals < 12) {
     char fmt[8];
     snprintf(fmt, 8, "%%.%df", options.fixedDecimals);
     snprintf(buffer, TTOKENVALUE_BUFFER_SIZE, fmt, m_value);
@@ -47,7 +43,7 @@ std::cout << "fixedDecimals=" << options.fixedDecimals << std::endl;
       decimal = str.length();
       str += ".";
     }
-std::cout << "decimal=" << decimal << " strlen=" << str.length() << std::endl;
+
     for (int k = options.fixedDecimals - (str.length() - decimal); k >= 0; --k) {
       str += "0";
     }

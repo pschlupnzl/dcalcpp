@@ -67,10 +67,6 @@ void redraw(CCalculate &calc, ICalcOptions &options) {
     refresh();
 }
 
-#define CHAR_BACKSPACE 0x08
-#define CHAR_DELETE 0x7F
-#define CHAR_ESCAPE 0x1B
-
 const char* const WELCOME_MESSAGE = "DysCalculator - Press 'q' to exit.";
 
 void interactive(CCalculate &calc, ICalcOptions& options) {
@@ -85,23 +81,24 @@ void interactive(CCalculate &calc, ICalcOptions& options) {
 
         int ch = getch();
 
+        eCommand cmd = commandFromKeyboard(ch);
+
         // printw("%s", (char*)&ch);
-        snprintf(message, MESSAGE_LENGTH, "%s Key=%d", WELCOME_MESSAGE, options.fixedDecimals, ch);
-        if (ch == 'q') {
+        if (cmd == eCommand::CMD_QUIT) {
             break;
-        } else if (ch == CHAR_ESCAPE || ch == 'C') {
+        } else if (cmd == eCommand::CMD_AC) {
             calc.reset();
-        } else if (ch == CHAR_BACKSPACE || ch == CHAR_DELETE) {
+        } else if (cmd == eCommand::CMD_DEL) {
             calc.backspace();
-        } else if (ch == 'R') {
+        } else if (cmd == eCommand::CMD_TRIGRAD) {
             options.trigRad = !options.trigRad;
-        } else if (ch == 'D') {
+        } else if (cmd == eCommand::CMD_DECISEP) {
             options.deciSep = options.deciSep == 0x00 ? ',' : 0x00;
-        } else if (ch == 'T') {
+        } else if (cmd == eCommand::CMD_THOUSEP) {
             options.thouSep = options.thouSep == 0x00 ? '\'' : 0x00;
-        } else if (ch == 'F') {
+        } else if (cmd == eCommand::CMD_FIXEDDECIMALS) {
             options.fixedDecimals =
-                options.fixedDecimals < 0 ? 3 : options.fixedDecimals - 1;
+                options.fixedDecimals < 1 ? 3 : options.fixedDecimals - 1;
         } else {
             eAction action = actionFromKeyboard(ch);
             if(calc.scan(action)) {
@@ -122,6 +119,7 @@ void interactive(CCalculate &calc, ICalcOptions& options) {
                 }
             }
         }
+        snprintf(message, MESSAGE_LENGTH, "%s Key=%d", WELCOME_MESSAGE, options.fixedDecimals, ch);
     }
     endwin();
 }

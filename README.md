@@ -87,7 +87,7 @@ We can run the Emscripten SDK in a container to build the Web Assembly files.
    # cd webassembly
    ```
 
-3. Build all requisite files
+3. Build all requisite files (this is also [build.sh](./webassembly/build.sh))
 
    ```
    # emcc -o dist.html --shell-file dcalcpp.htm -s NO_EXIT_RUNTIME=1 -s "EXPORTED_RUNTIME_METHODS=['ccall']" dcalcpp.cpp ../calc/*.cpp

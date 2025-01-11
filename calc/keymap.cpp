@@ -68,3 +68,21 @@ eAction actionFromKeyboard(const char ch) {
         ch == 'P' ? eAction::ACTION_ATAN :
         eAction::ACTION_UNDEFINED;
 }
+
+#define CHAR_BACKSPACE 0x08
+#define CHAR_DELETE 0x7F
+#define CHAR_ESCAPE 0x1B
+
+eCommand commandFromKeyboard(const char ch) {
+    return
+        ch == 'q' ? eCommand::CMD_QUIT :
+        ch == CHAR_ESCAPE ? eCommand::CMD_AC :
+        ch == 'C' ? eCommand::CMD_AC :
+        ch == CHAR_BACKSPACE ? eCommand::CMD_DEL :
+        ch == CHAR_DELETE ? eCommand::CMD_DEL :
+        ch == 'R' ? eCommand::CMD_TRIGRAD :
+        ch == 'D' ? eCommand::CMD_DECISEP :
+        ch == 'T' ? eCommand::CMD_THOUSEP :
+        ch == 'F' ? eCommand::CMD_FIXEDDECIMALS :
+        CMD_UNDEFINED;
+}
