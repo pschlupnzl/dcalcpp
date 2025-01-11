@@ -92,6 +92,9 @@ void interactive(CCalculate &calc, ICalcOptions& options) {
             calc.reset();
         } else if (ch == CHAR_BACKSPACE || ch == CHAR_DELETE) {
             calc.backspace();
+        } else if (ch == '#') {
+            options.fixedDecimals =
+                options.fixedDecimals < 0 ? 3 : options.fixedDecimals - 1;
         } else {
             eAction action = actionFromKeyboard(ch);
             if(calc.scan(action)) {

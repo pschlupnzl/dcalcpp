@@ -67,17 +67,19 @@ EXTERN EMSCRIPTEN_KEEPALIVE char* doCalc(char* src) {
 
     char *buf = (char*) malloc(512);
 
-    int len = 0;
-    calc.forEach([&buf, &len](IScan *scan) {
-        std::string tok = scan->toString(options) + " ";
-        snprintf(buf + len, 512 - len, "%s ", tok.c_str());
-        len += tok.length();
-    });
+    // int len = 0;
+    // calc.forEach([&buf, &len](IScan *scan) {
+    //     std::string tok = scan->toString(options) + " ";
+    //     snprintf(buf + len, 512 - len, "%s ", tok.c_str());
+    //     len += tok.length();
+    // });
 
-    // snprintf(buf, 512, "Calc: %s", calc.toString(options).c_str());
-    snprintf(buf + len, 512 - len, 
-        "%s",
-        calc.result()->toString(options).c_str());
+    // // snprintf(buf, 512, "Calc: %s", calc.toString(options).c_str());
+    // snprintf(buf + len, 512 - len, 
+    //     "%s",
+    //     calc.result()->toString(options).c_str());
+
+    snprintf(buf, 512, "%s", calc.toDisplayString(options).c_str());
 
     return buf;
 }

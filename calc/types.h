@@ -30,6 +30,8 @@ typedef struct ICalcOptions {
   char deciSep;
   /** Thousands separator, or 0x00 for none. */
   char thouSep;
+  /** Optional fixed decimals, or -1 for not fixed */
+  int fixedDecimals;
 } ICalcOptions;
 
 #endif /* TYPES_H */

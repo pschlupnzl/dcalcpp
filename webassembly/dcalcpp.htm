@@ -279,7 +279,8 @@
           const result = Module.ccall("doCalc", "string", ["string"], [src]);
           console.log(result);
 
-          out.innerHTML = result.split(" ").map(tokenToHtml).join(" ");
+          out.innerText = result;
+          // out.innerHTML = result.split(" ").map(tokenToHtml).join(" ");
           // out.innerHTML = tokenToHtml(result);
         };
 

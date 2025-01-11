@@ -5,6 +5,8 @@
 #include "TToken.h"
 #include "types.h"
 
+#include <iostream>
+
 /** Size of buffer for displaying a TTokenValue string. */
 #define TTOKENVALUE_BUFFER_SIZE 32
 
@@ -13,7 +15,18 @@ std::string TTokenValue::toString(const ICalcOptions &options) {
   // C++20 introduces std::format.
   // See also https://stackoverflow.com/a/21162120/13253316.
   char buffer[TTOKENVALUE_BUFFER_SIZE];
-  snprintf(buffer, TTOKENVALUE_BUFFER_SIZE, "%.15g", m_value);
+
+std::cout << "fixedDecimals=" << options.fixedDecimals << std::endl;
+
+  if (options.fixedDecimals >= 0) {
+    snprintf(buffer, TTOKENVALUE_BUFFER_SIZE, 
+      options.fixedDecimals == 0 ? "%.0f" :
+      options.fixedDecimals == 2 ? "%.2f" :
+      options.fixedDecimals == 3 ? "%.3f" :
+      "%.15f", m_value);
+  } else {
+    snprintf(buffer, TTOKENVALUE_BUFFER_SIZE, "%.15g", m_value);
+  }
   std::string str = buffer;
 
   // Trim unused zeros.
@@ -27,10 +40,24 @@ std::string TTokenValue::toString(const ICalcOptions &options) {
     if (pos == decimal) {
       // Remove decimal at end.
       str.pop_back();
-    } else if (options.deciSep != 0x00) {
+      decimal = std::string::npos;
+    }
+  }
+
+  if (options.fixedDecimals > 0) {
+    if (decimal == std::string::npos) {
+      decimal = str.length();
+      str += ".";
+    }
+std::cout << "decimal=" << decimal << " strlen=" << str.length() << std::endl;
+    for (int k = options.fixedDecimals - (str.length() - decimal); k >= 0; --k) {
+      str += "0";
+    }
+  }
+
+  if (options.deciSep != 0x00 && decimal != std::string::npos) {
       // Substitute decimal character.
       str[decimal] = options.deciSep;
-    }
   }
 
   if (options.thouSep != 0x00) {

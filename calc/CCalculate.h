@@ -119,6 +119,8 @@ public:
 
     /** Returns a string representation of the entire calculation. */
     std::string toString(const ICalcOptions& options);
+    /** Returns a string representation that can be parsed for display. */
+    std::string toDisplayString(const ICalcOptions &options);
     /** Returns a reference to the result token, or nullptr if not solved. */
     ITokenResultBase* result() const {
       return m_presult;

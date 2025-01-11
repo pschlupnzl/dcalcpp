@@ -101,6 +101,17 @@ std::string CCalculate::toString(const ICalcOptions &options)
     return str;
 }
 
+std::string CCalculate::toDisplayString(const ICalcOptions &options) {
+    std::string str;
+    for (IScan* scan : m_scan) {
+        str += scan->toString(options) + " ";
+    }
+    if (m_presult != nullptr) {
+        str += "=" + m_presult->toString(options);
+    }
+    return str;
+}
+
 void CCalculate::forEach(const std::function<void(IScan *)> fn)
 {
     for (IScan* scan : m_scan) {

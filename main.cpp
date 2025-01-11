@@ -38,7 +38,8 @@ CCalculate calc;
 ICalcOptions options = {
     .trigRad = true,
     .deciSep = 0x00,
-    .thouSep = 0x00
+    .thouSep = 0x00,
+    .fixedDecimals = -1,
 };
 
 
@@ -89,7 +90,7 @@ int main(int argc, char **argv) {
 
     calc.parseEquation();
     calc.evalEquation(options);
-    std::cout << calc.toString(options) << std::endl;
+    std::cout << calc.toDisplayString(options) << std::endl;
 
 
     // std::cout << "C++ version: " << __cplusplus << std::endl;
