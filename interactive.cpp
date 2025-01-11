@@ -33,12 +33,13 @@ void print(const char* str) {
 #define MESSAGE_LENGTH 64
 char message[MESSAGE_LENGTH];
 
-void redraw(CCalculate &calc) {
+void redraw(CCalculate &calc, ICalcOptions &options) {
     clear();
     mvprintw(0, 0, "%s", message);
 
     LcdToken lcdToken(&setCursor, &setFont, &getTextBounds, &drawRect, &print);
     lcdToken.setMetrics(0, -1, +1);
+    lcdToken.setOptions(options);
     int16_t cx, cy;
     
     cx = 0;
@@ -73,26 +74,32 @@ void redraw(CCalculate &calc) {
 const char* const WELCOME_MESSAGE = "DysCalculator - Press 'q' to exit.";
 
 void interactive(CCalculate &calc, ICalcOptions& options) {
-    snprintf(message, MESSAGE_LENGTH, "%s", WELCOME_MESSAGE);
+    snprintf(message, MESSAGE_LENGTH, "%s %d", WELCOME_MESSAGE, options.fixedDecimals);
     initscr();
     noecho();
 
     for (;;) {
         calc.parseEquation();
         calc.evalEquation(options);
-        redraw(calc);
+        redraw(calc, options);
 
         int ch = getch();
 
         // printw("%s", (char*)&ch);
-        snprintf(message, MESSAGE_LENGTH, "%s Key=%d", WELCOME_MESSAGE, ch);
+        snprintf(message, MESSAGE_LENGTH, "%s Key=%d", WELCOME_MESSAGE, options.fixedDecimals, ch);
         if (ch == 'q') {
             break;
-        } else if (ch == CHAR_ESCAPE) {
+        } else if (ch == CHAR_ESCAPE || ch == 'C') {
             calc.reset();
         } else if (ch == CHAR_BACKSPACE || ch == CHAR_DELETE) {
             calc.backspace();
-        } else if (ch == '#') {
+        } else if (ch == 'R') {
+            options.trigRad = !options.trigRad;
+        } else if (ch == 'D') {
+            options.deciSep = options.deciSep == 0x00 ? ',' : 0x00;
+        } else if (ch == 'T') {
+            options.thouSep = options.thouSep == 0x00 ? '\'' : 0x00;
+        } else if (ch == 'F') {
             options.fixedDecimals =
                 options.fixedDecimals < 0 ? 3 : options.fixedDecimals - 1;
         } else {
@@ -100,10 +107,18 @@ void interactive(CCalculate &calc, ICalcOptions& options) {
             if(calc.scan(action)) {
                 // Add auto-open bracket for unary operator.
                 switch(action) {
-                    case eAction::ACTION_SQRT:
+                    case eAction::ACTION_POW:
                     case eAction::ACTION_ROOT:
+                    case eAction::ACTION_SQRT:
+                    case eAction::ACTION_SIN:
+                    case eAction::ACTION_COS:
+                    case eAction::ACTION_TAN:
+                    case eAction::ACTION_ASIN:
+                    case eAction::ACTION_ACOS:
+                    case eAction::ACTION_ATAN:
                         calc.scan(eAction::ACTION_OPEN_AUTO);
                         break;
+                    default: /* nop */ break;
                 }
             }
         }

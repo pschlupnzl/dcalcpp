@@ -81,7 +81,8 @@ int main(int argc, char **argv) {
             // "1_2+2_3";
             // "1+2*34567.34";
             // "V(4)";
-            "4^3";
+            // "4^3";
+            "~1_2_3+V(3-(3@-7)";
         calc.reset();
         for (const char* pch = input; *pch; ++pch) {
             calc.scan(actionFromKeyboard(*pch));

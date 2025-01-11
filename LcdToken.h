@@ -35,6 +35,7 @@ private:
     .trigRad = false,
     .deciSep = 0x00,
     .thouSep = 0x00,
+    .fixedDecimals = -1
   };
 
   std::vector<LcdRect_t> m_rects;
@@ -122,6 +123,10 @@ public:
     m_hpad = hpad;
     m_vnum = vnum;
     m_vdenom = vdenom;
+  }
+
+  void setOptions(ICalcOptions& options) {
+    m_options = ICalcOptions(options);
   }
 
   void getBounds(IScan* scan, int16_t cx, int16_t cy, int16_t* out_tw) {

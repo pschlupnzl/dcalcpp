@@ -195,7 +195,7 @@ public:
     /** Returns this operator's precedence. */
     int op() { return m_op; }
     /** Evaluate the action on the given argument. */
-    ITokenResultBase* evaluate(ITokenResultBase* pArg);
+    ITokenResultBase* evaluate(ITokenResultBase* pArg, const ICalcOptions& options);
 
     std::string toString(const ICalcOptions &options) {
         return std::string(

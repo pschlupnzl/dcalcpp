@@ -5,11 +5,12 @@
 /** Conversion from degrees to radians. */
 #define M_PI_180 (M_PI / 180.00)
 
-ITokenResultBase* TTokenUnaryOp::evaluate(ITokenResultBase *pArg)
-{
+ITokenResultBase* TTokenUnaryOp::evaluate(
+    ITokenResultBase *pArg,
+    const ICalcOptions &options
+) {
     /** Multiplier for arguments to math.h trig functions in radians. */
-    // double trigToRad = 1.00; // M_PI_180
-    double trigToRad = M_PI_180;
+    double trigToRad = options.trigRad ? M_PI_180 : 1.00;
 
     eTokenType type = pArg->type();
     double dVal = pArg->value();

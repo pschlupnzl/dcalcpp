@@ -18,12 +18,10 @@ std::string TTokenValue::toString(const ICalcOptions &options) {
 
 std::cout << "fixedDecimals=" << options.fixedDecimals << std::endl;
 
-  if (options.fixedDecimals >= 0) {
-    snprintf(buffer, TTOKENVALUE_BUFFER_SIZE, 
-      options.fixedDecimals == 0 ? "%.0f" :
-      options.fixedDecimals == 2 ? "%.2f" :
-      options.fixedDecimals == 3 ? "%.3f" :
-      "%.15f", m_value);
+  if (options.fixedDecimals >= 0 && options.fixedDecimals < 12) {
+    char fmt[8];
+    snprintf(fmt, 8, "%%.%df", options.fixedDecimals);
+    snprintf(buffer, TTOKENVALUE_BUFFER_SIZE, fmt, m_value);
   } else {
     snprintf(buffer, TTOKENVALUE_BUFFER_SIZE, "%.15g", m_value);
   }

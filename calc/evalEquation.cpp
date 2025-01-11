@@ -50,7 +50,8 @@ void CCalculate::evalEquation(const ICalcOptions &options) {
                 pArg1 = dsVals.back();
                 dsVals.pop_back();
                 dsVals.push_back(((TTokenUnaryOp*)pvoThisValop)->evaluate(
-                    pArg1
+                    pArg1,
+                    options
                 ));
                 break;
 
