@@ -124,6 +124,6 @@ void CCalculate::parseEquation() {
 
     //// std::cout << "parseEquation@113 Final processOps" << std::endl;
     processOps(-1, m_pvoEquation, isOps);
-
+    m_iBrktOff = iBrktOff;
 }
 

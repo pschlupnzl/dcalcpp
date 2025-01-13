@@ -48,42 +48,9 @@
 // }
 
 CCalculate calc;
-ICalcOptions options;
 
 EMSCRIPTEN_KEEPALIVE void reset() {
     calc.reset();
-    options = ICalcOptions({
-        .trigRad = true,
-        .deciSep = 0x00,
-        .thouSep = 0x00,
-        .fixedDecimals = 0,
-    });
-}
-
-EMSCRIPTEN_KEEPALIVE void handleCommand(
-    eCommand cmd,
-    CCalculate& calc,
-    ICalcOptions& options
-) {
-    switch (cmd) {
-        case eCommand::CMD_AC:
-            calc.reset();
-            break;
-        case eCommand::CMD_TRIGRAD:
-            options.trigRad = !options.trigRad;
-            break;
-        case eCommand::CMD_DECISEP:
-            options.deciSep = options.deciSep == 0x00 ? ',' : 0x00;
-            break;
-        case eCommand::CMD_THOUSEP:
-            options.thouSep = options.thouSep == 0x00 ? '\'' : 0x00;
-            break;
-        case eCommand::CMD_FIXEDDECIMALS:
-            options.fixedDecimals =
-                options.fixedDecimals < 1 ? 3 : options.fixedDecimals - 1;
-            break;
-        default: /* nop */ break;
-    }
 }
 
 /**
@@ -92,14 +59,14 @@ EMSCRIPTEN_KEEPALIVE void handleCommand(
 EXTERN EMSCRIPTEN_KEEPALIVE char* doScan(char ch) {
     eCommand cmd = commandFromKeyboard(ch);
     if (cmd != eCommand::CMD_UNDEFINED) {
-        handleCommand(cmd, calc, options);
+        calc.command(cmd);
     } else {
         calc.scan(actionFromKeyboard(ch));
     }
     calc.parseEquation();
-    calc.evalEquation(options);
+    calc.evalEquation();
     char *buf = (char*) malloc(512);
-    snprintf(buf, 512, "%s", calc.toDisplayString(options).c_str());
+    snprintf(buf, 512, "%s", calc.toDisplayString().c_str());
     return buf;
 }
 
@@ -112,16 +79,16 @@ EXTERN EMSCRIPTEN_KEEPALIVE char* doCalc(char* src) {
     for (const char* pch = src; *pch; ++pch) {
         eCommand cmd = commandFromKeyboard(*pch);
         if (cmd != eCommand::CMD_UNDEFINED) {
-            handleCommand(cmd, calc, options);
+            calc.command(cmd);
         } else {
             calc.scan(actionFromKeyboard(*pch));
         }
     }
 
     calc.parseEquation();
-    calc.evalEquation(options);
+    calc.evalEquation();
     char *buf = (char*) malloc(512);
-    snprintf(buf, 512, "%s", calc.toDisplayString(options).c_str());
+    snprintf(buf, 512, "%s", calc.toDisplayString().c_str());
     return buf;
 }
 

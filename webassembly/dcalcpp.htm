@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Emscripten-Generated Code</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DysCalculator C++</title>
     <style>
       .emscripten-hidden {
         display: none;
@@ -84,8 +85,8 @@
         vertical-align: middle;
         margin: 0 0.15em;
       }
-      .calc-token:last-child::before {
-        content: " =";
+      .calc-token.calc-auto {
+        color: #979797;
       }
       .calc-value {
         vertical-align: middle;
@@ -102,6 +103,16 @@
       }
       .calc-frac .calc-num {
         border-bottom: 1px solid;
+      }
+
+      .dcalc-display {
+        font-size: 1.5em;
+        height: 2em;
+      }
+
+      .dcalc-keyboard button {
+        margin: 0.15em;
+        padding: 1em;
       }
     </style>
   </head>
@@ -229,70 +240,57 @@
     </script>
     {{{ SCRIPT }}}
 
-    <div>
-      Type the equation here using standard keys. The calculation will update
-      automatically.
-    </div>
-    <script>
-      (function () {
-        const txt = document.createElement("textarea");
-        const out = document.createElement("div");
-        txt.rows = 2;
-        txt.cols = 60;
-
-        document.body.appendChild(txt);
-        document.body.appendChild(out);
-
-        const tokenToHtml = (tokStr) =>{
-          if (tokStr.includes("_") ){
-            const parts = tokStr.split('_');
-            if (parts.length < 3) {
-              parts.splice(0, 0, "");
-            }
-            return `<span class="calc-token">
-              <span class="calc-value">${parts[0]}</span>
-              <span class="calc-frac">
-                <span class="calc-num">${parts[1]}</span>
-                <span class="calc-denom">${parts[2]}</span>
-              </span>
-            </span>`;
-          } else {
-            return `<span class="calc-token">
-              <span class="calc-value">${tokStr}</span>
-            </span>`;
-          }
-        }
-
-
-        txt.onkeyup = function (e) {
-          if (e.key === "Escape") {
-            txt.value = "";
-          }
-
-          const src = txt.value;
-          const result = Module.ccall("doCalc", "string", ["string"], [src]);
-          console.log(result);
-
-          out.innerText = result;
-          // out.innerHTML = result.split(" ").map(tokenToHtml).join(" ");
-          // out.innerHTML = tokenToHtml(result);
-        };
-
-        txt.focus();
-      })();
-    </script>
-
     <script>
       (function () {
         const out = document.createElement('div');
+        out.className = "dcalc-display";
         document.body.appendChild(out);
+
+        const tokenToHtml = (tokStr) => {
+          let str = "";
+          if (tokStr.startsWith("=")) {
+            str += `<span class="calc-token">=</span>`;
+            tokStr = tokStr.substring(1);
+          }
+
+          if (tokStr.startsWith("]")) {
+            str += `<span class="calc-token calc-auto">)</span>`;
+          } else if (tokStr.includes("_") ){
+            const parts = tokStr.split('_').map((s)=>+s);
+            if (parts.length < 3) {
+              parts.splice(0, 0, 0);
+            }
+            str += `<span class="calc-token">`;
+            if (parts[0]) {
+              str += `<span class="calc-value">${parts[0]}</span>`;
+            }
+            if (parts[1]) {
+              str += `
+                <span class="calc-frac">
+                  <span class="calc-num">${parts[1]}</span>
+                  <span class="calc-denom">${parts[2] || "&nbsp;"}</span>
+                </span>`;
+            }
+            str += `</span>`;
+          } else {
+            str += `<span class="calc-token">
+              <span class="calc-value">${tokStr}</span>
+            </span>`;
+          }
+
+          return str;
+        }
 
         const handleKey = (key) => {
           const result = Module.ccall('doScan', 'string', ['number'], [key.ch.charCodeAt(0)]);
-          out.innerText = result;
+          out.innerHTML = result.split(" ").map(tokenToHtml).join("");
         };
 
         const KEYS = [
+          [
+            { ch: "C", label: "AC" },
+            { ch: "c", label: "⌫"}
+          ],
           [
             { ch: '~', label: '±'},
             { ch: '0', label: '0'},
@@ -306,6 +304,25 @@
             { ch: '8', label: '8'},
             { ch: '9', label: '9'},
             { ch: '.', label: '.'},
+          ],
+          [
+            { ch: '_', label: 'ˣ⁄y' },
+            { ch: '(', label: '(' },
+            { ch: ')', label: ')' },
+            { ch: 'V', label: '√' },
+            { ch: '@', label: '²' },
+            { ch: '/', label: '÷' },
+            { ch: '*', label: '×' },
+            { ch: '+', label: '+' },
+            { ch: '-', label: '-' },
+          ],
+          [
+            { ch: 'i', label: 'sin' },
+            { ch: 'o', label: 'cos' },
+            { ch: 'p', label: 'tan' },
+            { ch: 'I', label: 'asin' },
+            { ch: 'O', label: 'acos' },
+            { ch: 'P', label: 'atan' },
           ]
         ];
         const keyboard = document.createElement('div');

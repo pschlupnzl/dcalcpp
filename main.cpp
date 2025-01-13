@@ -14,7 +14,7 @@
 
 #include "tests/runTests.h"
 
-void interactive(CCalculate &calc, ICalcOptions &options);
+void interactive(CCalculate &calc);
 
 /*
 * To build and run the Docker container, which has Ubuntu and full g++ compiler:
@@ -34,14 +34,6 @@ void interactive(CCalculate &calc, ICalcOptions &options);
 */
 
 CCalculate calc;
-
-ICalcOptions options = {
-    .trigRad = true,
-    .deciSep = 0x00,
-    .thouSep = 0x00,
-    .fixedDecimals = 0,
-};
-
 
 int main(int argc, char **argv) {
     const char* input = nullptr;
@@ -70,7 +62,7 @@ int main(int argc, char **argv) {
     }
 
     if (isInteractive) {
-        interactive(calc, options);
+        interactive(calc);
     } else if (input == nullptr) {
         input =
             // "(1+2)*3";
@@ -90,8 +82,8 @@ int main(int argc, char **argv) {
     }
 
     calc.parseEquation();
-    calc.evalEquation(options);
-    std::cout << calc.toDisplayString(options) << std::endl;
+    calc.evalEquation();
+    std::cout << calc.toDisplayString() << std::endl;
 
 
     // std::cout << "C++ version: " << __cplusplus << std::endl;

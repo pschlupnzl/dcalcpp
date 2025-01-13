@@ -895,11 +895,6 @@ const std::vector<testCase_t> autogenCases = {
 
 void runTestCases(const std::vector<testCase_t> &cases, int& pass) {
     CCalculate testCalc;
-    ICalcOptions options = {
-        .trigRad = true,
-        .deciSep = 0x00,
-        .thouSep = 0x00
-    };
 
     // for (testCase_t t : numberCases) {
     // for (testCase_t t : fractionCases) {
@@ -918,14 +913,14 @@ void runTestCases(const std::vector<testCase_t> &cases, int& pass) {
             std::string cmd = chars.substr(pos, next - pos);
             pos = next + 1;
 
-            testCalc.scan(actionFromCmd(cmd));
+            testCalc.scan(actionFromCmd(cmd), true);
         }
 
         testCalc.parseEquation();
-        testCalc.evalEquation(options);
+        testCalc.evalEquation();
         ITokenResultBase* result = testCalc.result();
         bool success =
-            (result != nullptr && result->toString(options) == expect) ||
+            (result != nullptr && result->toString(testCalc.getOptions()) == expect) ||
             (result == nullptr && expect == "");
 
 
@@ -936,7 +931,7 @@ void runTestCases(const std::vector<testCase_t> &cases, int& pass) {
             if (result == nullptr) {
                 std::cout << "(no result)";
             } else {
-                std::cout << result->toString(options) << " (expected " << expect << ")";
+                std::cout << result->toString(testCalc.getOptions()) << " (expected " << expect << ")";
             }
             std::cout << std::endl;
         }

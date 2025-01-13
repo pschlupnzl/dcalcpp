@@ -4,7 +4,7 @@
 /**
  * Evaluate the equation.
  */
-void CCalculate::evalEquation(const ICalcOptions &options) {
+void CCalculate::evalEquation() {
     reset_result();
 
     /** Number of tokens on the equation stack. */
@@ -51,7 +51,7 @@ void CCalculate::evalEquation(const ICalcOptions &options) {
                 dsVals.pop_back();
                 dsVals.push_back(((TTokenUnaryOp*)pvoThisValop)->evaluate(
                     pArg1,
-                    options
+                    m_options
                 ));
                 break;
 

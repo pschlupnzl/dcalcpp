@@ -45,6 +45,7 @@ void CCalculate::reset_scan() {
 }
 
 void CCalculate::reset_pvoEquation() {
+    m_iBrktOff = 0;
     while (m_pvoEquation.size() > 0) {
         IToken* token = m_pvoEquation.back();
         m_pvoEquation.pop_back();
@@ -79,35 +80,66 @@ void CCalculate::reset_result() {
     }
 }
 
-std::string CCalculate::toString(const ICalcOptions &options)
+bool CCalculate::command(eCommand cmd)
+{
+    switch (cmd) {
+        case eCommand::CMD_AC:
+            reset();
+            break;
+        case eCommand::CMD_DEL:
+            backspace();
+            break;
+        case eCommand::CMD_TRIGRAD:
+            m_options.trigRad = !m_options.trigRad;
+            break;
+        case eCommand::CMD_DECISEP:
+            m_options.deciSep = m_options.deciSep == 0x00 ? ',' : 0x00;
+            break;
+        case eCommand::CMD_THOUSEP:
+            m_options.thouSep = m_options.thouSep == 0x00 ? '\'' : 0x00;
+            break;
+        case eCommand::CMD_FIXEDDECIMALS:
+            m_options.fixedDecimals =
+                m_options.fixedDecimals < 1 ? 3 : m_options.fixedDecimals - 1;
+            break;
+        default:
+            return false;
+    }
+    return true;
+}
+
+std::string CCalculate::toString()
 {
     std::string str;
     str += "Scan:\n ";
     for (IScan* scan : m_scan) {
-        str += "‹" + scan->toString(options) + "› ";
+        str += "‹" + scan->toString(m_options) + "› ";
     }
     str += "\n";
 
     str += "Tokens:\n ";
     for (IToken* tok : m_pvoEquation) {
-        str += "«" + tok->toString(options) + "» ";
+        str += "«" + tok->toString(m_options) + "» ";
     }
     str += "\n";
 
     if (m_presult != nullptr) {
-        str += "= " + m_presult->toString(options) + "\n";
+        str += "= " + m_presult->toString(m_options) + "\n";
     }
 
     return str;
 }
 
-std::string CCalculate::toDisplayString(const ICalcOptions &options) {
+std::string CCalculate::toDisplayString() {
     std::string str;
     for (IScan* scan : m_scan) {
-        str += scan->toString(options) + " ";
+        str += scan->toString(m_options) + " ";
+    }
+    for (int iBrktOff = m_iBrktOff; iBrktOff > 0; --iBrktOff) {
+        str += "] ";
     }
     if (m_presult != nullptr) {
-        str += "=" + m_presult->toString(options);
+        str += "=" + m_presult->toString(m_options);
     }
     return str;
 }

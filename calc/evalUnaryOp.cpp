@@ -10,7 +10,7 @@ ITokenResultBase* TTokenUnaryOp::evaluate(
     const ICalcOptions &options
 ) {
     /** Multiplier for arguments to math.h trig functions in radians. */
-    double trigToRad = options.trigRad ? M_PI_180 : 1.00;
+    double trigToRad = options.trigRad ? 1.00 : M_PI_180;
 
     eTokenType type = pArg->type();
     double dVal = pArg->value();

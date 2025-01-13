@@ -17,7 +17,7 @@ Mapping QWERTY keyboard to DysCalculator Original
 | CAPSLOCK |  A  |  S  |  D  |  F  |  G  |  H  |  J  |  K  |  L  |  ;  |  '  | RETURN  |
 +----------+-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+---------------+
 |             |     |     | AC  |  √x |     |     |     |     |     |     |            |
-|             |     |     |     | ˣ√y |     |     |     |     |  .  |  /  |            |
+|             |     |     | del | ˣ√y |     |     |     |     |  .  |  /  |            |
 |   SHIFT     |  Z  |  X  |  C  |  V  |  B  |  N  |  M  |  ,  |  .  |  /  |   SHIFT    |
 +-------------+-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+------------+
 
@@ -77,9 +77,10 @@ eCommand commandFromKeyboard(const char ch) {
     return
         ch == 'q' ? eCommand::CMD_QUIT :
         ch == CHAR_ESCAPE ? eCommand::CMD_AC :
-        ch == 'C' ? eCommand::CMD_AC :
         ch == CHAR_BACKSPACE ? eCommand::CMD_DEL :
         ch == CHAR_DELETE ? eCommand::CMD_DEL :
+        ch == 'C' ? eCommand::CMD_AC :
+        ch == 'c' ? eCommand::CMD_DEL :
         ch == 'R' ? eCommand::CMD_TRIGRAD :
         ch == 'D' ? eCommand::CMD_DECISEP :
         ch == 'T' ? eCommand::CMD_THOUSEP :

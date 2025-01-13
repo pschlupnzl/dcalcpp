@@ -50,6 +50,13 @@
  */
 class CCalculate {
 private:
+    ICalcOptions m_options = {
+      .trigRad = false,
+      .deciSep = 0x00,
+      .thouSep = 0x00,
+      .fixedDecimals = 0,
+    };
+    
     /** Keys entered, used for backspace. */
     std::vector<eAction> m_actions;
     /** Parsed tokens in the order entered by the user. */
@@ -58,6 +65,8 @@ private:
     std::vector<IToken*> m_pvoEquation;
     /** Final result, or `nullptr` if no solution to be had. */
     ITokenResultBase* m_presult = nullptr;
+    /** Number of automatically-closing brackets after evaluation. */
+    int m_iBrktOff = 0;
     /** Location of last error, when parsing. */
     size_t m_lastErrorLocation = 0;
     /** Last error that happened. */
@@ -76,7 +85,7 @@ private:
      * Scan the action without adding to m_actions array, returning a value
      * indicating whether the action was scanned.
      */
-    bool scanSilent(eAction action);
+    bool scanSilent(eAction action, bool noAutoOpen = false);
 
 public:
     CCalculate() { }
@@ -84,6 +93,8 @@ public:
       reset();
     }
 
+    /** Returns a reference to the current calculation options. */
+    const ICalcOptions& getOptions() { return m_options; }
     /** Reset the equation - this is te AC (clear all) action. */
     void reset();
     /** Reset the `m_actions` vector. */
@@ -96,11 +107,19 @@ public:
     void reset_result();
 
     /**
+     * Process the given command, returning a value indicating whether the
+     * command was handled.
+     */
+    bool command(eCommand cmd);
+
+    /**
      * Scan the character and add to the current equation, returning a value
      * indicating whether the action was allowed.
      * @param action The keypress action to add to the current equation.
+     * @param noAutoOpoen Optional value to suppress the auto-insertion of open
+     * parenthesis after unary operators.
     */
-    bool scan(eAction action);
+    bool scan(eAction action, bool noAutoOpen = false);
 
     /** Remove the most recent action (character), returning the action removed. */
     void backspace();
@@ -108,7 +127,7 @@ public:
     /** Parse the tokens into the RPN stack. */
     void parseEquation();
     /** Evaluate the RPN stack to attain the result. */
-    void evalEquation(const ICalcOptions& options);
+    void evalEquation();
 
     /**
      * Iterate over the scanned tokens, used e.g. to display the read equation.
@@ -118,9 +137,9 @@ public:
     void forEach(const std::function<void(IScan*)> fn);
 
     /** Returns a string representation of the entire calculation. */
-    std::string toString(const ICalcOptions& options);
+    std::string toString();
     /** Returns a string representation that can be parsed for display. */
-    std::string toDisplayString(const ICalcOptions &options);
+    std::string toDisplayString();
     /** Returns a reference to the result token, or nullptr if not solved. */
     ITokenResultBase* result() const {
       return m_presult;

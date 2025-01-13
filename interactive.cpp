@@ -33,13 +33,13 @@ void print(const char* str) {
 #define MESSAGE_LENGTH 64
 char message[MESSAGE_LENGTH];
 
-void redraw(CCalculate &calc, ICalcOptions &options) {
+void redraw(CCalculate &calc) {
     clear();
     mvprintw(0, 0, "%s", message);
 
     LcdToken lcdToken(&setCursor, &setFont, &getTextBounds, &drawRect, &print);
     lcdToken.setMetrics(0, -1, +1);
-    lcdToken.setOptions(options);
+    lcdToken.setOptions(calc.getOptions());
     int16_t cx, cy;
     
     cx = 0;
@@ -69,15 +69,15 @@ void redraw(CCalculate &calc, ICalcOptions &options) {
 
 const char* const WELCOME_MESSAGE = "DysCalculator - Press 'q' to exit.";
 
-void interactive(CCalculate &calc, ICalcOptions& options) {
-    snprintf(message, MESSAGE_LENGTH, "%s %d", WELCOME_MESSAGE, options.fixedDecimals);
+void interactive(CCalculate &calc) {
+    snprintf(message, MESSAGE_LENGTH, "%s", WELCOME_MESSAGE);
     initscr();
     noecho();
 
     for (;;) {
         calc.parseEquation();
-        calc.evalEquation(options);
-        redraw(calc, options);
+        calc.evalEquation();
+        redraw(calc);
 
         int ch = getch();
 
@@ -86,40 +86,12 @@ void interactive(CCalculate &calc, ICalcOptions& options) {
         // printw("%s", (char*)&ch);
         if (cmd == eCommand::CMD_QUIT) {
             break;
-        } else if (cmd == eCommand::CMD_AC) {
-            calc.reset();
-        } else if (cmd == eCommand::CMD_DEL) {
-            calc.backspace();
-        } else if (cmd == eCommand::CMD_TRIGRAD) {
-            options.trigRad = !options.trigRad;
-        } else if (cmd == eCommand::CMD_DECISEP) {
-            options.deciSep = options.deciSep == 0x00 ? ',' : 0x00;
-        } else if (cmd == eCommand::CMD_THOUSEP) {
-            options.thouSep = options.thouSep == 0x00 ? '\'' : 0x00;
-        } else if (cmd == eCommand::CMD_FIXEDDECIMALS) {
-            options.fixedDecimals =
-                options.fixedDecimals < 1 ? 3 : options.fixedDecimals - 1;
+        } else if (cmd != eCommand::CMD_UNDEFINED) {
+            calc.command(cmd);
         } else {
-            eAction action = actionFromKeyboard(ch);
-            if(calc.scan(action)) {
-                // Add auto-open bracket for unary operator.
-                switch(action) {
-                    case eAction::ACTION_POW:
-                    case eAction::ACTION_ROOT:
-                    case eAction::ACTION_SQRT:
-                    case eAction::ACTION_SIN:
-                    case eAction::ACTION_COS:
-                    case eAction::ACTION_TAN:
-                    case eAction::ACTION_ASIN:
-                    case eAction::ACTION_ACOS:
-                    case eAction::ACTION_ATAN:
-                        calc.scan(eAction::ACTION_OPEN_AUTO);
-                        break;
-                    default: /* nop */ break;
-                }
-            }
+            calc.scan(actionFromKeyboard(ch));
         }
-        snprintf(message, MESSAGE_LENGTH, "%s Key=%d", WELCOME_MESSAGE, options.fixedDecimals, ch);
+        snprintf(message, MESSAGE_LENGTH, "%s Key=%d", WELCOME_MESSAGE, ch);
     }
     endwin();
 }

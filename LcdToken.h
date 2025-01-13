@@ -125,7 +125,7 @@ public:
     m_vdenom = vdenom;
   }
 
-  void setOptions(ICalcOptions& options) {
+  void setOptions(const ICalcOptions& options) {
     m_options = ICalcOptions(options);
   }
 

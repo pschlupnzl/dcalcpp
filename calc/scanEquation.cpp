@@ -2,15 +2,15 @@
 #include "CCalculate.h"
 #include "eAction.h"
 
-bool CCalculate::scan(eAction action) {
-    if (scanSilent(action)) {
+bool CCalculate::scan(eAction action, bool noAutoOpen) {
+    if (scanSilent(action, noAutoOpen = false)) {
         m_actions.push_back(action);
         return true;
     };
     return false;
 }
 
-bool CCalculate::scanSilent(eAction action) {
+bool CCalculate::scanSilent(eAction action, bool noAutoOpen) {
     IScan* last = m_scan.size() <= 0 
         ? nullptr 
         : m_scan.back();
@@ -64,11 +64,25 @@ bool CCalculate::scanSilent(eAction action) {
 
         case eAction::ACTION_OPEN:
         case eAction::ACTION_OPEN_AUTO:
-            m_scan.push_back(new TScanOpen());
+            if (!last ||
+                type == eScanType::SCAN_BINARYOP ||
+                type == eScanType::SCAN_UNARYOP ||
+                type == eScanType::SCAN_OPEN
+            ) {
+                m_scan.push_back(new TScanOpen());
+            } else {
+                return false;
+            }
             break;
 
         case eAction::ACTION_CLOSE:
-            m_scan.push_back(new TScanClose());
+            if (type == eScanType::SCAN_NUMBER ||
+                type == eScanType::SCAN_CLOSE
+            ) {
+                m_scan.push_back(new TScanClose());
+            } else {
+                return false;
+            }
             break;
 
         case eAction::ACTION_SQRT:
@@ -109,6 +123,21 @@ bool CCalculate::scanSilent(eAction action) {
         default:
             // All other characters not scanned.
             return false;
+    }
+
+    // Auto-open parenthesis after unary operator.
+    if (!noAutoOpen && (
+        action == eAction::ACTION_POW ||
+        action == eAction::ACTION_ROOT ||
+        action == eAction::ACTION_SQRT ||
+        action == eAction::ACTION_SIN ||
+        action == eAction::ACTION_COS ||
+        action == eAction::ACTION_TAN ||
+        action == eAction::ACTION_ASIN ||
+        action == eAction::ACTION_ACOS ||
+        action == eAction::ACTION_ATAN
+    )) {
+        m_scan.push_back(new TScanOpen());
     }
     return true;
 }
