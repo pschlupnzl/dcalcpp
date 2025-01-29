@@ -2,15 +2,15 @@
 #include "CCalculate.h"
 #include "eAction.h"
 
-bool CCalculate::scan(eAction action, bool noAutoOpen) {
-    if (scanSilent(action, noAutoOpen = false)) {
+bool CCalculate::scan(eAction action) {
+    if (scanSilent(action)) {
         m_actions.push_back(action);
         return true;
     };
     return false;
 }
 
-bool CCalculate::scanSilent(eAction action, bool noAutoOpen) {
+bool CCalculate::scanSilent(eAction action) {
     IScan* last = m_scan.size() <= 0 
         ? nullptr 
         : m_scan.back();
@@ -126,7 +126,7 @@ bool CCalculate::scanSilent(eAction action, bool noAutoOpen) {
     }
 
     // Auto-open parenthesis after unary operator.
-    if (!noAutoOpen && (
+    if (m_options.autoOpen && (
         action == eAction::ACTION_POW ||
         action == eAction::ACTION_ROOT ||
         action == eAction::ACTION_SQRT ||

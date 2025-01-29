@@ -55,6 +55,7 @@ private:
       .deciSep = 0x00,
       .thouSep = 0x00,
       .fixedDecimals = 0,
+      .autoOpen = false,
     };
     
     /** Keys entered, used for backspace. */
@@ -85,7 +86,7 @@ private:
      * Scan the action without adding to m_actions array, returning a value
      * indicating whether the action was scanned.
      */
-    bool scanSilent(eAction action, bool noAutoOpen = false);
+    bool scanSilent(eAction action);
 
 public:
     CCalculate() { }
@@ -95,6 +96,10 @@ public:
 
     /** Returns a reference to the current calculation options. */
     const ICalcOptions& getOptions() { return m_options; }
+    /** Set the trig function radial / degree switch. */
+    void setTrigRad(bool trigRad) { m_options.trigRad = trigRad; }
+    /** Set the behaviour of automatically inserting parentheses after unary operators. */
+    void setAutoOpen(bool autoOpen) { m_options.autoOpen = autoOpen; }
     /** Reset the equation - this is te AC (clear all) action. */
     void reset();
     /** Reset the `m_actions` vector. */
@@ -116,10 +121,10 @@ public:
      * Scan the character and add to the current equation, returning a value
      * indicating whether the action was allowed.
      * @param action The keypress action to add to the current equation.
-     * @param noAutoOpoen Optional value to suppress the auto-insertion of open
-     * parenthesis after unary operators.
+     * @param autoOpen Optional value to automatically insert open * parenthesis
+     * after unary operators, useful for interactive scanning.
     */
-    bool scan(eAction action, bool noAutoOpen = false);
+    bool scan(eAction action);
 
     /** Remove the most recent action (character), returning the action removed. */
     void backspace();
@@ -140,6 +145,8 @@ public:
     std::string toString();
     /** Returns a string representation that can be parsed for display. */
     std::string toDisplayString();
+    /** Returns a string representation to be shown in the result preview display. */
+    std::string toResultString();
     /** Returns a reference to the result token, or nullptr if not solved. */
     ITokenResultBase* result() const {
       return m_presult;

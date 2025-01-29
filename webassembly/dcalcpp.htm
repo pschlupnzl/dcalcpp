@@ -282,8 +282,12 @@
         }
 
         const handleKey = (key) => {
-          const result = Module.ccall('doScan', 'string', ['number'], [key.ch.charCodeAt(0)]);
-          out.innerHTML = result.split(" ").map(tokenToHtml).join("");
+          const eqn = Module.ccall('doScan', 'string', ['number'], [key.ch.charCodeAt(0)]);
+          out.innerHTML = eqn.split(" ").map(tokenToHtml).join("");
+          const result = Module.ccall('getResult', 'string', null);
+          out.innerHTML += result.startsWith("=") 
+            ? tokenToHtml(result)
+            : `<span>${result}</span>`;
         };
 
         const KEYS = [

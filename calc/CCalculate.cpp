@@ -138,10 +138,13 @@ std::string CCalculate::toDisplayString() {
     for (int iBrktOff = m_iBrktOff; iBrktOff > 0; --iBrktOff) {
         str += "] ";
     }
-    if (m_presult != nullptr) {
-        str += "=" + m_presult->toString(m_options);
-    }
     return str;
+}
+
+std::string CCalculate::toResultString() {
+    return m_presult == nullptr
+        ? "..."
+        : "=" + m_presult->toString(m_options);
 }
 
 void CCalculate::forEach(const std::function<void(IScan *)> fn)

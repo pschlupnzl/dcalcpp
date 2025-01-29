@@ -70,6 +70,7 @@ void redraw(CCalculate &calc) {
 const char* const WELCOME_MESSAGE = "DysCalculator - Press 'q' to exit.";
 
 void interactive(CCalculate &calc) {
+    calc.setAutoOpen(true);
     snprintf(message, MESSAGE_LENGTH, "%s", WELCOME_MESSAGE);
     initscr();
     noecho();

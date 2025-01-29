@@ -895,6 +895,7 @@ const std::vector<testCase_t> autogenCases = {
 
 void runTestCases(const std::vector<testCase_t> &cases, int& pass) {
     CCalculate testCalc;
+    testCalc.setTrigRad(false);
 
     // for (testCase_t t : numberCases) {
     // for (testCase_t t : fractionCases) {
@@ -913,7 +914,7 @@ void runTestCases(const std::vector<testCase_t> &cases, int& pass) {
             std::string cmd = chars.substr(pos, next - pos);
             pos = next + 1;
 
-            testCalc.scan(actionFromCmd(cmd), true);
+            testCalc.scan(actionFromCmd(cmd));
         }
 
         testCalc.parseEquation();

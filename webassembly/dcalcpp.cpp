@@ -92,7 +92,14 @@ EXTERN EMSCRIPTEN_KEEPALIVE char* doCalc(char* src) {
     return buf;
 }
 
+EXTERN EMSCRIPTEN_KEEPALIVE char* getResult() {
+    char *buf = (char*) malloc(64);
+    snprintf(buf, 64, "%s", calc.toResultString().c_str());
+    return buf;
+}
+
 int main(int argc, const char* argv[]) {
+    calc.setAutoOpen(true);
     printf("Hello there big wide world\n");
     return 0;
 }

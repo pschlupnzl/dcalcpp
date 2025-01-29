@@ -32,6 +32,8 @@ typedef struct ICalcOptions {
   char thouSep;
   /** Optional fixed decimals, or -1 for not fixed */
   int fixedDecimals;
+  /** Optional value indicating whether parentheses should be injected after unary operators. */
+  bool autoOpen;
 } ICalcOptions;
 
 #endif /* TYPES_H */

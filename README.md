@@ -3,12 +3,18 @@
 This is an implementation of DysCalculator aimed at embedded systems, e.g.
 Espressif ESP32.
 
-## Build: Docker
+On this page:
+
+- [Build: Docker](#build-docker) with tests
+- [Flash to device](#flash-to-device) with Arduino IDE
+- [Emscripten](#emscripten) web interface
+
+# Build: Docker
 
 Because build the tooling requires a complete C++ compiler, the Dockerfile
 creates a minimal Ubuntu container that can be used to build the project.
 
-1. Build the container with
+1. From within the _docker_ folder, build the container with
 
    ```
    $ docker build -t dcalcpp .
@@ -22,19 +28,19 @@ creates a minimal Ubuntu container that can be used to build the project.
    $ docker run --rm -it -v .:/app dcalcpp bash
    ```
 
-3. Inside the container, build all _\*.cpp_ files, including tests.
-   If you're using the _curses_ library for display, link it with
+   - Inside the container, build all _\*.cpp_ files, including tests.
+      If you're using the _curses_ library for display, link it with
 
-   ```
-   # g++ *.cpp **/*.cpp -lncurses
-   ```
+      ```
+      # g++ *.cpp calc/*.cpp tests/*.cpp -lncurses
+      ```
 
-4. Run the built application. You can do this either in the build container, or
-   on the host command line after it has been built.
+   - Run the built application. You can do this either in the build container, or
+      on the host command line after it has been built.
 
-   ```
-   # ./a.out
-   ```
+      ```
+      # ./a.out
+      ```
 
 ## Tests
 
@@ -81,17 +87,17 @@ We can run the Emscripten SDK in a container to build the Web Assembly files.
    $ docker run --rm -it -v $(pwd):/src -u $(id -u):$(id -g)  emscripten/emsdk bash
    ```
 
-2. Inside the container, change to the _webassembly_ directory:
+   - Inside the container, change to the _webassembly_ directory:
 
-   ```
-   # cd webassembly
-   ```
+      ```
+      # cd webassembly
+      ```
 
-3. Build all requisite files (this is also [build.sh](./webassembly/build.sh))
+   - Build all requisite files (this is also [build.sh](./webassembly/build.sh))
 
-   ```
-   # emcc -o dist.html --shell-file dcalcpp.htm -s NO_EXIT_RUNTIME=1 -s "EXPORTED_RUNTIME_METHODS=['ccall']" dcalcpp.cpp ../calc/*.cpp
-   ```
+      ```
+      # emcc -o dist.html --shell-file dcalcpp.htm -s NO_EXIT_RUNTIME=1 -s "EXPORTED_RUNTIME_METHODS=['ccall']" dcalcpp.cpp ../calc/*.cpp
+      ```
 
 4. In a separate process on the host, run a server from the _webassembly_
    folder
